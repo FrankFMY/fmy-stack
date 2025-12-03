@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/elysia-kit",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "ElysiaJS backend framework utilities: createApp, AuthPlugin, middleware, CRUD generation",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",

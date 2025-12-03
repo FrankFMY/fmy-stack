@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/validation",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "ArkType схемы валидации: Email, PhoneRU, INN, OGRN, СНИЛС, Password, UserCreate",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",

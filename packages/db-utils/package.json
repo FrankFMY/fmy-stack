@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/db-utils",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Drizzle ORM helpers: BaseEntity, pagination, search, soft delete, transactions, bulk operations",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",
