@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/core",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "Фундаментальные TypeScript утилиты: даты, деньги, строки, телефоны, валидация ИНН/ОГРН, хэширование",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",

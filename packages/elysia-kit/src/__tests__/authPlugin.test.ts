@@ -26,7 +26,7 @@ describe('authPlugin', () => {
 
 		const response = await app.handle(
 			new Request('http://localhost/profile', {
-				headers: { Authorization: 'Bearer ' + token }
+				headers: { Authorization: `Bearer ${token}` }
 			})
 		);
 		expect(response.status).toBe(200);

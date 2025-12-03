@@ -20,6 +20,8 @@ export {
 // Query Helpers
 export {
 	paginate,
+	buildPaginatedResult,
+	getCountSql,
 	type PaginationParams,
 	type PaginatedResult
 } from './query/paginate.js';
@@ -29,7 +31,12 @@ export { buildSearchFilter, type SearchConfig } from './query/search.js';
 export { withSoftDelete, type SoftDeleteOptions } from './query/softDelete.js';
 
 // Transaction Helpers
-export { runTransaction, type TransactionCallback } from './transaction/runTransaction.js';
+export {
+	runTransaction,
+	runBatchTransaction,
+	runTransactionWithRetry,
+	type TransactionCallback
+} from './transaction/runTransaction.js';
 
 // Bulk Operations
 export {

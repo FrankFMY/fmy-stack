@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/ui",
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"description": "Svelte 5 UI компоненты с TailwindCSS v4: Button, Input, DataTable, Toast, Modal, Theme",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",

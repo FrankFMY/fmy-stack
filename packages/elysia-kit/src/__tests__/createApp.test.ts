@@ -8,7 +8,9 @@ import { createApp } from '../app/createApp.js';
 describe('createApp', () => {
 	test('should create app with default config', async () => {
 		const app = createApp();
-		const response = await app.handle(new Request('http://localhost/api/test')).then((r) => r.text());
+		const response = await app
+			.handle(new Request('http://localhost/api/test'))
+			.then((r) => r.text());
 		expect(response).toBeDefined();
 	});
 
@@ -21,7 +23,9 @@ describe('createApp', () => {
 		const app = createApp({ prefix: '/api/v1' });
 		app.get('/test', () => ({ message: 'test' }));
 
-		const response = await app.handle(new Request('http://localhost/api/v1/test')).then((r) => r.json());
+		const response = await app
+			.handle(new Request('http://localhost/api/v1/test'))
+			.then((r) => r.json());
 		expect(response).toEqual({ message: 'test' });
 	});
 
@@ -61,4 +65,3 @@ describe('createApp', () => {
 		expect(text).toBeDefined();
 	});
 });
-

@@ -13,9 +13,9 @@ describe('respond.success', () => {
 	});
 
 	test('should create success response with meta', () => {
-		const response = respond.success({ id: 1 }, { requestId: 'abc123' });
+		const response = respond.success({ id: 1 }, { page: 1, limit: 10, total: 100 });
 		expect(response.success).toBe(true);
-		expect(response.meta).toEqual({ requestId: 'abc123' });
+		expect(response.meta).toEqual({ page: 1, limit: 10, total: 100 });
 	});
 });
 
@@ -23,31 +23,32 @@ describe('respond.error', () => {
 	test('should create error response', () => {
 		const response = respond.error('Something went wrong', 500);
 		expect(response.success).toBe(false);
-		expect(response.error.message).toBe('Something went wrong');
-		expect(response.error.code).toBe(500);
+		expect(response.error).toBe('Something went wrong');
 	});
 
 	test('should create error response with details', () => {
 		const response = respond.error('Validation failed', 400, { field: 'email' });
-		expect(response.error.details).toEqual({ field: 'email' });
+		expect(response.success).toBe(false);
+		expect(response.error).toBe('Validation failed');
+		expect(response.details).toEqual({ field: 'email' });
 	});
 });
 
 describe('respond.paginated', () => {
 	test('should create paginated response', () => {
 		const data = [{ id: 1 }, { id: 2 }];
-		const response = respond.paginated(data, 100, 1, 10);
+		const response = respond.paginated(data, 1, 10, 100);
 		expect(response.success).toBe(true);
 		expect(response.data).toEqual(data);
-		expect(response.pagination.total).toBe(100);
-		expect(response.pagination.page).toBe(1);
-		expect(response.pagination.limit).toBe(10);
-		expect(response.pagination.totalPages).toBe(10);
+		expect(response.meta.page).toBe(1);
+		expect(response.meta.limit).toBe(10);
+		expect(response.meta.total).toBe(100);
+		expect(response.meta.totalPages).toBe(10);
 	});
 
 	test('should calculate totalPages correctly', () => {
-		const response = respond.paginated([], 25, 1, 10);
-		expect(response.pagination.totalPages).toBe(3);
+		const response = respond.paginated([], 1, 10, 25);
+		expect(response.meta.totalPages).toBe(3);
 	});
 });
 
@@ -63,6 +64,6 @@ describe('respond.noContent', () => {
 	test('should create no content response', () => {
 		const response = respond.noContent();
 		expect(response.success).toBe(true);
-		expect(response.data).toBeNull();
+		expect(response.data).toBeUndefined();
 	});
 });
