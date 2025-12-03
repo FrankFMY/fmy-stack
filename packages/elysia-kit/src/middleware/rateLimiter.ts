@@ -1,15 +1,26 @@
 /**
- * @fileoverview FrankFMY Platform — Initiative Development
- * @author Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
+ * @fileoverview FrankFMY Platform — Initiative Development / Инициативная разработка
+ * @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
+ * @copyright 2025 Artyom Pryanishnikov
+ * @license PolyForm-Shield-1.0.0
+ *
+ * Middleware для ограничения частоты запросов (rate limiting)
  */
 
 import { Elysia } from 'elysia';
 import { ApiError, HttpStatus } from '../utils/errors.js';
 
+/**
+ * Конфигурация для rate limiter middleware.
+ */
 export interface RateLimitConfig {
+	/** Временное окно в миллисекундах (по умолчанию 60000 = 1 минута) */
 	windowMs?: number;
+	/** Максимальное количество запросов в окне (по умолчанию 100) */
 	max?: number;
+	/** Сообщение об ошибке при превышении лимита */
 	message?: string;
+	/** Функция для генерации ключа идентификации клиента (по умолчанию использует IP) */
 	keyGenerator?: (request: Request) => string;
 }
 
@@ -30,6 +41,16 @@ const defaultConfig: Required<RateLimitConfig> = {
 	}
 };
 
+/**
+ * Создает middleware для ограничения частоты запросов (rate limiting).
+ * Отслеживает количество запросов от каждого клиента и блокирует при превышении лимита.
+ * Автоматически устанавливает HTTP заголовки X-RateLimit-* для информирования клиента.
+ * @param config - Конфигурация rate limiter
+ * @returns ElysiaJS plugin с rate limiting
+ * @example
+ * app.use(rateLimiter({ windowMs: 60000, max: 100 }));
+ * // Ограничивает до 100 запросов в минуту с каждого IP
+ */
 export function rateLimiter(config: RateLimitConfig = {}) {
 	const finalConfig = { ...defaultConfig, ...config };
 	const store = new Map<string, RateLimitEntry>();

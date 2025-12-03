@@ -4,7 +4,7 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
-	import { clsx } from 'clsx';
+	import { cn } from './utils';
 
 	interface Props {
 		variant?: 'success' | 'error' | 'warning' | 'info';
@@ -66,26 +66,26 @@
 </script>
 
 <div
-	class={clsx('flex items-start gap-3 rounded-lg border p-4', styles.bg, styles.border, className)}
+	class={cn('flex items-start gap-3 rounded-lg border p-4', styles.bg, styles.border, className)}
 	role="alert"
 >
-	<div class={clsx('flex-shrink-0', styles.icon)}>
+	<div class={cn('flex-shrink-0', styles.icon)}>
 		<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			{@html icons[variant]}
 		</svg>
 	</div>
 
 	<div class="flex-1">
-		<p class={clsx('text-sm font-medium', styles.title)}>{message}</p>
+		<p class={cn('text-sm font-medium', styles.title)}>{message}</p>
 		{#if description}
-			<p class={clsx('mt-1 text-sm', styles.desc)}>{description}</p>
+			<p class={cn('mt-1 text-sm', styles.desc)}>{description}</p>
 		{/if}
 	</div>
 
 	{#if dismissible}
 		<button
 			type="button"
-			class={clsx(
+			class={cn(
 				'flex-shrink-0 rounded-lg p-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5',
 				styles.icon
 			)}

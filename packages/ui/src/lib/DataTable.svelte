@@ -5,6 +5,7 @@
 -->
 <script lang="ts" generics="T extends Record<string, unknown>">
 	import type { Snippet } from 'svelte';
+	import { cn } from './utils';
 
 	// Export interfaces for external use
 	export interface DataTableColumn<T> {
@@ -83,19 +84,20 @@
 </script>
 
 <div
-	class={`overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 ${className ?? ''}`}
+	class={cn('overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700', className)}
 >
 	<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 		<thead class="bg-gray-50 dark:bg-gray-800">
 			<tr>
 				{#each columns as column (column.key)}
 					<th
-						class={`
-							${compact ? 'px-4 py-2' : 'px-6 py-3'}
-							${alignClasses[column.align ?? 'left']}
-							text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400
-							${column.sortable ? 'cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700' : ''}
-						`}
+						class={cn(
+							compact ? 'px-4 py-2' : 'px-6 py-3',
+							alignClasses[column.align ?? 'left'],
+							'text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400',
+							column.sortable &&
+								'cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700'
+						)}
 						style:width={column.width}
 						onclick={() => column.sortable && handleSort(column.key)}
 					>
@@ -104,14 +106,24 @@
 							{#if column.sortable}
 								<span class="flex flex-col">
 									<svg
-										class={`h-3 w-3 ${sortKey === column.key && sortOrder === 'asc' ? 'text-blue-600' : 'text-gray-400'}`}
+										class={cn(
+											'h-3 w-3',
+											sortKey === column.key && sortOrder === 'asc'
+												? 'text-blue-600'
+												: 'text-gray-400'
+										)}
 										fill="currentColor"
 										viewBox="0 0 24 24"
 									>
 										<path d="M7 14l5-5 5 5z" />
 									</svg>
 									<svg
-										class={`-mt-1 h-3 w-3 ${sortKey === column.key && sortOrder === 'desc' ? 'text-blue-600' : 'text-gray-400'}`}
+										class={cn(
+											'-mt-1 h-3 w-3',
+											sortKey === column.key && sortOrder === 'desc'
+												? 'text-blue-600'
+												: 'text-gray-400'
+										)}
 										fill="currentColor"
 										viewBox="0 0 24 24"
 									>
@@ -140,7 +152,10 @@
 				<tr>
 					<td
 						colspan={columns.length}
-						class={`${compact ? 'px-4 py-8' : 'px-6 py-12'} text-center text-gray-500 dark:text-gray-400`}
+						class={cn(
+							compact ? 'px-4 py-8' : 'px-6 py-12',
+							'text-center text-gray-500 dark:text-gray-400'
+						)}
 					>
 						{emptyMessage}
 					</td>
@@ -148,21 +163,21 @@
 			{:else}
 				{#each data as row, index (getRowKey(row, index))}
 					<tr
-						class={`
-							${striped && index % 2 === 1 ? 'bg-gray-50 dark:bg-gray-800/50' : ''}
-							${hoverable ? 'hover:bg-gray-100 dark:hover:bg-gray-800' : ''}
-							${onRowClick ? 'cursor-pointer' : ''}
-							${bordered ? 'border-b border-gray-200 dark:border-gray-700' : ''}
-						`}
+						class={cn(
+							striped && index % 2 === 1 && 'bg-gray-50 dark:bg-gray-800/50',
+							hoverable && 'hover:bg-gray-100 dark:hover:bg-gray-800',
+							onRowClick && 'cursor-pointer',
+							bordered && 'border-b border-gray-200 dark:border-gray-700'
+						)}
 						onclick={() => handleRowClick(row, index)}
 					>
 						{#each columns as column (column.key)}
 							<td
-								class={`
-									${compact ? 'px-4 py-2' : 'px-6 py-4'}
-									${alignClasses[column.align ?? 'left']}
-									text-sm text-gray-900 dark:text-gray-100
-								`}
+								class={cn(
+									compact ? 'px-4 py-2' : 'px-6 py-4',
+									alignClasses[column.align ?? 'left'],
+									'text-sm text-gray-900 dark:text-gray-100'
+								)}
 							>
 								{#if column.render}
 									{@render column.render(row[column.key], row)}

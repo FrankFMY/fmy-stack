@@ -4,8 +4,8 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
+	import { cn } from './utils';
 	import type { Snippet } from 'svelte';
-	import { clsx } from 'clsx';
 
 	interface Props {
 		open?: boolean;
@@ -32,6 +32,10 @@
 		onclose,
 		class: className
 	}: Props = $props();
+
+	const titleId = $derived(
+		title ? `modal-title-${Math.random().toString(36).slice(2, 9)}` : undefined
+	);
 
 	const sizeStyles = {
 		sm: 'max-w-sm',
@@ -71,12 +75,13 @@
 		<!-- Modal content -->
 		<dialog
 			open
-			class={clsx(
+			class={cn(
 				'relative w-full rounded-xl bg-white shadow-xl dark:bg-gray-800',
 				sizeStyles[size],
 				className
 			)}
 			aria-modal="true"
+			aria-labelledby={titleId}
 		>
 			<!-- Header -->
 			{#if title || showCloseButton}
@@ -84,7 +89,7 @@
 					class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700"
 				>
 					{#if title}
-						<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+						<h3 id={titleId} class="text-lg font-semibold text-gray-900 dark:text-gray-100">
 							{title}
 						</h3>
 					{:else}

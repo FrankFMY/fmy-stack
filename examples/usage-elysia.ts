@@ -4,14 +4,7 @@
  * Run: bun run examples/usage-elysia.ts
  */
 
-import {
-	createApp,
-	authPlugin,
-	rateLimiter,
-	ApiError,
-	HttpStatus,
-	respond
-} from '@frankfmy/elysia-kit';
+import { ApiError, authPlugin, createApp, rateLimiter, respond } from '@frankfmy/elysia-kit';
 import { t } from 'elysia';
 
 // ============================================
@@ -108,7 +101,7 @@ app
 	.post(
 		'/auth/login',
 		async ({ body, jwt, cookie }) => {
-			const { email, password } = body;
+			const { email, password: _password } = body;
 
 			// Find user by email
 			const user = Array.from(users.values()).find((u) => u.email === email);
@@ -222,9 +215,7 @@ app
 		'/users',
 		async ({ body }) => {
 			// Check if email already exists
-			const existing = Array.from(users.values()).find(
-				(u) => u.email === body.email
-			);
+			const existing = Array.from(users.values()).find((u) => u.email === body.email);
 			if (existing) {
 				throw ApiError.conflict('Email already exists');
 			}
@@ -330,4 +321,3 @@ Test credentials:
 });
 
 export default app;
-

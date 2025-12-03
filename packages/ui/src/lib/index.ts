@@ -34,3 +34,5 @@ export {
 } from './ThemeProvider.svelte';
 export { default as ThemeSwitcher } from './ThemeSwitcher.svelte';
 
+// Utilities
+export { cn } from './utils.js';

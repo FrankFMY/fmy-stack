@@ -22,42 +22,86 @@ import {
 // ============================================================================
 
 /**
- * Email адрес
+ * Схема валидации email адреса.
+ * Проверяет соответствие формату RFC 5322.
+ * @example
+ * EmailSchema('user@example.com') // 'user@example.com'
+ * EmailSchema('invalid-email') // Error
  */
 export const EmailSchema = type('string.email');
+
+/** Тип email адреса, выведенный из схемы */
 export type Email = typeof EmailSchema.infer;
 
 /**
- * URL
+ * Схема валидации URL адреса.
+ * Проверяет соответствие стандартам URL.
+ * @example
+ * UrlSchema('https://example.com') // 'https://example.com'
+ * UrlSchema('not-a-url') // Error
  */
 export const UrlSchema = type('string.url');
+
+/** Тип URL, выведенный из схемы */
 export type Url = typeof UrlSchema.infer;
 
 /**
- * UUID v4
+ * Схема валидации UUID версии 4.
+ * Проверяет соответствие формату UUID v4.
+ * @example
+ * UuidSchema('550e8400-e29b-41d4-a716-446655440000') // '550e8400-e29b-41d4-a716-446655440000'
+ * UuidSchema('invalid-uuid') // Error
  */
 export const UuidSchema = type('string.uuid.v4');
+
+/** Тип UUID v4, выведенный из схемы */
 export type Uuid = typeof UuidSchema.infer;
 
 /**
- * Непустая строка
+ * Схема валидации непустой строки.
+ * Строка должна содержать минимум 1 символ.
+ * @example
+ * NonEmptyStringSchema('hello') // 'hello'
+ * NonEmptyStringSchema('') // Error
  */
 export const NonEmptyStringSchema = type('string >= 1');
+
+/** Тип непустой строки, выведенный из схемы */
 export type NonEmptyString = typeof NonEmptyStringSchema.infer;
 
 /**
- * Строка с минимальной длиной
+ * Создает схему валидации строки с минимальной длиной.
+ * @param min - Минимальная длина строки (включительно)
+ * @returns Схема ArkType для валидации
+ * @example
+ * const schema = minLengthString(3);
+ * schema('abc') // 'abc'
+ * schema('ab') // Error
  */
 export const minLengthString = (min: number) => type(`string >= ${min}`);
 
 /**
- * Строка с максимальной длиной
+ * Создает схему валидации строки с максимальной длиной.
+ * @param max - Максимальная длина строки (включительно)
+ * @returns Схема ArkType для валидации
+ * @example
+ * const schema = maxLengthString(5);
+ * schema('hello') // 'hello'
+ * schema('hello world') // Error
  */
 export const maxLengthString = (max: number) => type(`string <= ${max}`);
 
 /**
- * Строка с диапазоном длины
- * Использует нативный синтаксис ArkType для intersection constraints
+ * Создает схему валидации строки с диапазоном длины.
+ * Использует нативный синтаксис ArkType для intersection constraints.
+ * @param min - Минимальная длина строки (включительно)
+ * @param max - Максимальная длина строки (включительно)
+ * @returns Схема ArkType для валидации
+ * @example
+ * const schema = rangeLengthString(3, 10);
+ * schema('hello') // 'hello'
+ * schema('hi') // Error (слишком коротко)
+ * schema('hello world!') // Error (слишком длинно)
  */
 export const rangeLengthString = (min: number, max: number) =>
 	type(`string >= ${min}`).and(`string <= ${max}`);
@@ -67,7 +111,12 @@ export const rangeLengthString = (min: number, max: number) =>
 // ============================================================================
 
 /**
- * Российский номер телефона (+7XXXXXXXXXX)
+ * Схема валидации российского номера телефона.
+ * Проверяет соответствие формату российских мобильных номеров (+7XXXXXXXXXX).
+ * @example
+ * PhoneRUSchema('+79991234567') // '+79991234567'
+ * PhoneRUSchema('+74991234567') // Error (городской номер)
+ * PhoneRUSchema('invalid') // Error
  */
 export const PhoneRUSchema = type('string').narrow((value, ctx) => {
 	const cleaned = value.replace(/\D/g, '');
@@ -76,10 +125,16 @@ export const PhoneRUSchema = type('string').narrow((value, ctx) => {
 	}
 	return true;
 });
+
+/** Тип российского номера телефона, выведенный из схемы */
 export type PhoneRU = typeof PhoneRUSchema.infer;
 
 /**
- * ИНН юридического лица (10 цифр)
+ * Схема валидации ИНН юридического лица (10 цифр).
+ * Проверяет длину и контрольную сумму по алгоритму ФНС.
+ * @example
+ * INN10Schema('7707083893') // '7707083893'
+ * INN10Schema('7707083894') // Error (неверная контрольная сумма)
  */
 export const INN10Schema = type('string').narrow((value, ctx) => {
 	const cleaned = value.replace(/\D/g, '');
@@ -91,10 +146,16 @@ export const INN10Schema = type('string').narrow((value, ctx) => {
 	}
 	return true;
 });
+
+/** Тип ИНН юридического лица, выведенный из схемы */
 export type INN10 = typeof INN10Schema.infer;
 
 /**
- * ИНН физического лица (12 цифр)
+ * Схема валидации ИНН физического лица (12 цифр).
+ * Проверяет длину и контрольную сумму по алгоритму ФНС.
+ * @example
+ * INN12Schema('500100732259') // '500100732259'
+ * INN12Schema('500100732258') // Error (неверная контрольная сумма)
  */
 export const INN12Schema = type('string').narrow((value, ctx) => {
 	const cleaned = value.replace(/\D/g, '');
@@ -106,6 +167,8 @@ export const INN12Schema = type('string').narrow((value, ctx) => {
 	}
 	return true;
 });
+
+/** Тип ИНН физического лица, выведенный из схемы */
 export type INN12 = typeof INN12Schema.infer;
 
 /**
@@ -476,7 +539,13 @@ export type SearchParams = typeof SearchParamsSchema.infer;
 // ============================================================================
 
 /**
- * Scope со всеми валидационными типами
+ * Scope со всеми валидационными типами для удобства использования.
+ * Содержит наиболее часто используемые схемы валидации.
+ * @example
+ * import { v } from '@frankfmy/validation';
+ *
+ * const result = v.email('user@example.com'); // валидация email
+ * const money = v.money(123.45); // валидация денег
  */
 export const validationScope = scope({
 	// Базовые
@@ -493,6 +562,7 @@ export const validationScope = scope({
 	passwordSimple: 'string >= 6'
 });
 
+/** Экспортированный scope для удобного использования */
 export const v = validationScope.export();
 
 // ============================================================================
@@ -500,10 +570,22 @@ export const v = validationScope.export();
 // ============================================================================
 
 /**
- * Проверить данные и вернуть Result
+ * Проверяет данные по схеме и возвращает Result с результатом валидации.
+ * Не выбрасывает исключения, возвращает объект с результатом.
+ * @param schema - Схема ArkType для валидации
+ * @param data - Данные для проверки
+ * @returns Result объект: { success: true, data: T } при успехе или { success: false, errors: string[] } при ошибке
+ * @template T - Тип валидных данных
+ * @example
+ * const result = validate(EmailSchema, 'user@example.com');
+ * if (result.success) {
+ *   console.log('Email valid:', result.data);
+ * } else {
+ *   console.log('Validation errors:', result.errors);
+ * }
  */
 export function validate<T>(
-	schema: { (data: unknown): T | type.errors },
+	schema: (data: unknown) => T | type.errors,
 	data: unknown
 ):
 	| { success: true; data: T; errors?: never }
@@ -524,10 +606,23 @@ export function validate<T>(
 }
 
 /**
- * Проверить данные и выбросить ошибку если невалидны
+ * Проверяет данные по схеме и выбрасывает исключение при ошибке валидации.
+ * Удобна для случаев, когда невалидные данные должны приводить к ошибке.
+ * @param schema - Схема ArkType для валидации
+ * @param data - Данные для проверки
+ * @returns Валидные данные типа T
+ * @throws Error с сообщением о неудачной валидации
+ * @template T - Тип валидных данных
+ * @example
+ * try {
+ *   const email = validateOrThrow(EmailSchema, 'user@example.com');
+ *   console.log('Valid email:', email);
+ * } catch (error) {
+ *   console.log('Validation failed:', error.message);
+ * }
  */
 export function validateOrThrow<T>(
-	schema: { (data: unknown): T | type.errors },
+	schema: (data: unknown) => T | type.errors,
 	data: unknown
 ): T {
 	const result = schema(data);

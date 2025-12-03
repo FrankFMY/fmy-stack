@@ -16,20 +16,20 @@ export function cleanPhone(phone: string): string {
 
 	// Если начинается с 8, заменяем на 7
 	if (cleaned.startsWith('8') && cleaned.length === 11) {
-		return '+7' + cleaned.slice(1);
+		return `+7${cleaned.slice(1)}`;
 	}
 
 	// Если начинается с 7
 	if (cleaned.startsWith('7') && cleaned.length === 11) {
-		return '+' + cleaned;
+		return `+${cleaned}`;
 	}
 
 	// Если 10 цифр (без кода страны)
 	if (cleaned.length === 10) {
-		return '+7' + cleaned;
+		return `+7${cleaned}`;
 	}
 
-	return '+' + cleaned;
+	return `+${cleaned}`;
 }
 
 /**
@@ -42,9 +42,9 @@ export function formatPhoneRU(phone: string): string {
 	// Убеждаемся, что у нас есть 11 цифр (включая код страны)
 	let normalized = cleaned;
 	if (cleaned.length === 10) {
-		normalized = '7' + cleaned;
+		normalized = `7${cleaned}`;
 	} else if (cleaned.startsWith('8') && cleaned.length === 11) {
-		normalized = '7' + cleaned.slice(1);
+		normalized = `7${cleaned.slice(1)}`;
 	}
 
 	if (normalized.length !== 11 || !normalized.startsWith('7')) {
@@ -68,9 +68,9 @@ export function formatPhoneCompact(phone: string): string {
 
 	let normalized = cleaned;
 	if (cleaned.length === 10) {
-		normalized = '7' + cleaned;
+		normalized = `7${cleaned}`;
 	} else if (cleaned.startsWith('8') && cleaned.length === 11) {
-		normalized = '7' + cleaned.slice(1);
+		normalized = `7${cleaned.slice(1)}`;
 	}
 
 	if (normalized.length !== 11 || !normalized.startsWith('7')) {
@@ -98,9 +98,9 @@ export function parsePhone(phone: string): {
 
 	let normalized = cleaned;
 	if (cleaned.length === 10) {
-		normalized = '7' + cleaned;
+		normalized = `7${cleaned}`;
 	} else if (cleaned.startsWith('8') && cleaned.length === 11) {
-		normalized = '7' + cleaned.slice(1);
+		normalized = `7${cleaned.slice(1)}`;
 	}
 
 	const isValid = normalized.length === 11 && normalized.startsWith('7');
@@ -123,7 +123,15 @@ export function parsePhone(phone: string): {
 }
 
 /**
- * Проверить валидность российского номера телефона
+ * Проверяет валидность российского номера телефона.
+ * Российские мобильные номера должны начинаться с 9 и иметь правильную длину.
+ * @param phone - Номер телефона для проверки
+ * @returns `true` если номер валиден, иначе `false`
+ * @example
+ * validatePhoneRU('+79991234567') // true
+ * validatePhoneRU('89991234567') // true
+ * validatePhoneRU('+74991234567') // false (городской номер)
+ * validatePhoneRU('invalid') // false
  */
 export function validatePhoneRU(phone: string): boolean {
 	const cleaned = phone.replace(/\D/g, '');
@@ -161,10 +169,84 @@ export function getOperator(phone: string): string | null {
 
 	// Упрощенное определение оператора по DEF-коду
 	const operatorMap: Record<string, string[]> = {
-		МТС: ['910', '911', '912', '913', '914', '915', '916', '917', '918', '919', '980', '981', '982', '983', '984', '985', '986', '987', '988', '989'],
-		Билайн: ['903', '905', '906', '909', '960', '961', '962', '963', '964', '965', '966', '967', '968', '969'],
-		МегаФон: ['920', '921', '922', '923', '924', '925', '926', '927', '928', '929', '930', '931', '932', '933', '934', '936', '937', '938', '939'],
-		Теле2: ['900', '901', '902', '904', '908', '950', '951', '952', '953', '958', '991', '992', '993', '994', '995', '996', '999']
+		МТС: [
+			'910',
+			'911',
+			'912',
+			'913',
+			'914',
+			'915',
+			'916',
+			'917',
+			'918',
+			'919',
+			'980',
+			'981',
+			'982',
+			'983',
+			'984',
+			'985',
+			'986',
+			'987',
+			'988',
+			'989'
+		],
+		Билайн: [
+			'903',
+			'905',
+			'906',
+			'909',
+			'960',
+			'961',
+			'962',
+			'963',
+			'964',
+			'965',
+			'966',
+			'967',
+			'968',
+			'969'
+		],
+		МегаФон: [
+			'920',
+			'921',
+			'922',
+			'923',
+			'924',
+			'925',
+			'926',
+			'927',
+			'928',
+			'929',
+			'930',
+			'931',
+			'932',
+			'933',
+			'934',
+			'936',
+			'937',
+			'938',
+			'939'
+		],
+		Теле2: [
+			'900',
+			'901',
+			'902',
+			'904',
+			'908',
+			'950',
+			'951',
+			'952',
+			'953',
+			'958',
+			'991',
+			'992',
+			'993',
+			'994',
+			'995',
+			'996',
+			'999'
+		]
 	};
 
 	for (const [operator, codes] of Object.entries(operatorMap)) {
@@ -210,9 +292,9 @@ export function maskPhoneNumber(phone: string): string {
 
 	let normalized = cleaned;
 	if (cleaned.length === 10) {
-		normalized = '7' + cleaned;
+		normalized = `7${cleaned}`;
 	} else if (cleaned.startsWith('8') && cleaned.length === 11) {
-		normalized = '7' + cleaned.slice(1);
+		normalized = `7${cleaned.slice(1)}`;
 	}
 
 	if (normalized.length !== 11 || !normalized.startsWith('7')) {
@@ -224,4 +306,3 @@ export function maskPhoneNumber(phone: string): string {
 
 	return `+7 (***) ***-${part2}-${part3}`;
 }
-

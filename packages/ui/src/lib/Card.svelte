@@ -4,8 +4,8 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
+	import { cn } from './utils';
 	import type { Snippet } from 'svelte';
-	import { clsx } from 'clsx';
 
 	interface Props {
 		title?: string;
@@ -37,7 +37,7 @@
 	};
 
 	let computedClass = $derived(
-		clsx(
+		cn(
 			'rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800',
 			hoverable && 'cursor-pointer transition-shadow hover:shadow-md dark:hover:border-gray-600',
 			className

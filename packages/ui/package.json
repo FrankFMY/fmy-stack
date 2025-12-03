@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/ui",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"description": "Svelte 5 UI компоненты с TailwindCSS v4: Button, Input, DataTable, Toast, Modal, Theme",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",
@@ -17,7 +17,11 @@
 		},
 		"./styles.css": "./dist/styles.css"
 	},
-	"files": ["dist", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "svelte-package",
 		"dev": "svelte-package --watch",
@@ -32,7 +36,8 @@
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {
-		"clsx": "^2.1.1"
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^3.4.0"
 	},
 	"devDependencies": {
 		"@sveltejs/package": "^2.3.11",

@@ -4,9 +4,9 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import type { HTMLButtonAttributes } from 'svelte/elements';
-	import { clsx } from 'clsx';
+	import type { Snippet } from 'svelte';
+	import { cn } from './utils';
 
 	interface Props extends HTMLButtonAttributes {
 		variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -77,11 +77,17 @@
 	};
 
 	let computedClass = $derived(
-		clsx(baseStyles, variantStyles[variant], sizeStyles[size], fullWidth && 'w-full', className)
+		cn(baseStyles, variantStyles[variant], sizeStyles[size], fullWidth && 'w-full', className)
 	);
 </script>
 
-<button {type} class={computedClass} disabled={disabled || loading} {...restProps}>
+<button
+	{type}
+	class={computedClass}
+	disabled={disabled || loading}
+	aria-busy={loading}
+	{...restProps}
+>
 	{#if loading}
 		<svg
 			class="h-4 w-4 animate-spin"

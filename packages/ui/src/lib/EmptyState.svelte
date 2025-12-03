@@ -4,8 +4,8 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
+	import { cn } from './utils';
 	import type { Snippet } from 'svelte';
-	import { clsx } from 'clsx';
 
 	interface Props {
 		title?: string;
@@ -18,7 +18,7 @@
 	let { title = 'Нет данных', description, icon, action, class: className }: Props = $props();
 </script>
 
-<div class={clsx('flex flex-col items-center justify-center py-12 text-center', className)}>
+<div class={cn('flex flex-col items-center justify-center py-12 text-center', className)}>
 	{#if icon}
 		<div class="mb-4 text-gray-400 dark:text-gray-500">
 			{@render icon()}

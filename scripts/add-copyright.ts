@@ -8,8 +8,8 @@
  * Usage: bun run scripts/add-copyright.ts
  */
 
-import { readdir, readFile, writeFile, stat } from 'fs/promises';
-import { join, extname } from 'path';
+import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { extname, join } from 'node:path';
 
 const COPYRIGHT_TS = `/**
  * @fileoverview FrankFMY Platform — Initiative Development / Инициативная разработка
@@ -65,10 +65,7 @@ interface Stats {
 	added: number;
 }
 
-async function addCopyrightToFile(
-	filePath: string,
-	stats: Stats
-): Promise<void> {
+async function addCopyrightToFile(filePath: string, stats: Stats): Promise<void> {
 	const ext = extname(filePath);
 	let copyright: string;
 
@@ -118,10 +115,7 @@ async function addCopyrightToFile(
 	}
 }
 
-async function traverseDirectory(
-	directory: string,
-	stats: Stats
-): Promise<void> {
+async function traverseDirectory(directory: string, stats: Stats): Promise<void> {
 	const entries = await readdir(directory, { withFileTypes: true });
 
 	for (const entry of entries) {

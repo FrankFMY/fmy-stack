@@ -183,7 +183,10 @@ describe('sample and sampleN', () => {
 	test('should return random element', () => {
 		const arr = [1, 2, 3, 4, 5];
 		const s = sample(arr);
-		expect(arr).toContain(s);
+		expect(s).toBeDefined();
+		if (s !== undefined) {
+			expect(arr).toContain(s);
+		}
 	});
 
 	test('should return empty for empty array', () => {
@@ -194,7 +197,9 @@ describe('sample and sampleN', () => {
 		const arr = [1, 2, 3, 4, 5];
 		const samples = sampleN(arr, 3);
 		expect(samples).toHaveLength(3);
-		samples.forEach((s) => expect(arr).toContain(s));
+		for (const s of samples) {
+			expect(arr).toContain(s);
+		}
 	});
 });
 

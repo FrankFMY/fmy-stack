@@ -4,7 +4,7 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
-	import { clsx } from 'clsx';
+	import { cn } from './utils';
 
 	interface Props {
 		page: number;
@@ -77,11 +77,11 @@
 		'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
 </script>
 
-<nav class={clsx('flex items-center justify-center gap-1', className)} aria-label="Pagination">
+<nav class={cn('flex items-center justify-center gap-1', className)} aria-label="Pagination">
 	{#if showFirstLast}
 		<button
 			type="button"
-			class={clsx(buttonClass, inactiveClass)}
+			class={cn(buttonClass, inactiveClass)}
 			disabled={page === 1}
 			onclick={() => goToPage(1)}
 			aria-label="First page"
@@ -99,7 +99,7 @@
 
 	<button
 		type="button"
-		class={clsx(buttonClass, inactiveClass)}
+		class={cn(buttonClass, inactiveClass)}
 		disabled={page === 1}
 		onclick={() => goToPage(page - 1)}
 		aria-label="Previous page"
@@ -115,7 +115,7 @@
 		{:else}
 			<button
 				type="button"
-				class={clsx(buttonClass, pageNum === page ? activeClass : inactiveClass)}
+				class={cn(buttonClass, pageNum === page ? activeClass : inactiveClass)}
 				onclick={() => goToPage(pageNum)}
 				aria-current={pageNum === page ? 'page' : undefined}
 			>
@@ -126,7 +126,7 @@
 
 	<button
 		type="button"
-		class={clsx(buttonClass, inactiveClass)}
+		class={cn(buttonClass, inactiveClass)}
 		disabled={page === totalPages}
 		onclick={() => goToPage(page + 1)}
 		aria-label="Next page"
@@ -139,7 +139,7 @@
 	{#if showFirstLast}
 		<button
 			type="button"
-			class={clsx(buttonClass, inactiveClass)}
+			class={cn(buttonClass, inactiveClass)}
 			disabled={page === totalPages}
 			onclick={() => goToPage(totalPages)}
 			aria-label="Last page"

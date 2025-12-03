@@ -8,8 +8,14 @@
  */
 
 /**
- * Проверить валидность ИНН (Идентификационный номер налогоплательщика)
- * ИНН юрлица: 10 цифр, ИНН физлица: 12 цифр
+ * Проверяет валидность ИНН (Идентификационный номер налогоплательщика).
+ * Поддерживает ИНН юридических лиц (10 цифр) и физических лиц (12 цифр).
+ * @param inn - ИНН для проверки (может содержать пробелы и другие символы)
+ * @returns `true` если ИНН валиден, иначе `false`
+ * @example
+ * validateINN('7707083893') // true (юридическое лицо)
+ * validateINN('500100732259') // true (физическое лицо)
+ * validateINN('1234567890') // false (невалидный ИНН)
  */
 export function validateINN(inn: string): boolean {
 	const cleaned = inn.replace(/\D/g, '');
@@ -26,7 +32,10 @@ export function validateINN(inn: string): boolean {
 }
 
 /**
- * Проверить ИНН юридического лица (10 цифр)
+ * Проверяет ИНН юридического лица (10 цифр) по алгоритму ФНС.
+ * Вычисляет контрольную сумму и сравнивает с последней цифрой.
+ * @param inn - ИНН юридического лица (10 цифр)
+ * @returns `true` если ИНН валиден, иначе `false`
  */
 function validateINN10(inn: string): boolean {
 	const weights = [2, 4, 10, 3, 5, 9, 4, 6, 8];
@@ -42,7 +51,10 @@ function validateINN10(inn: string): boolean {
 }
 
 /**
- * Проверить ИНН физического лица (12 цифр)
+ * Проверяет ИНН физического лица (12 цифр) по алгоритму ФНС.
+ * Вычисляет две контрольные суммы и сравнивает с последними цифрами.
+ * @param inn - ИНН физического лица (12 цифр)
+ * @returns `true` если ИНН валиден, иначе `false`
  */
 function validateINN12(inn: string): boolean {
 	const weights1 = [7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
@@ -67,8 +79,14 @@ function validateINN12(inn: string): boolean {
 }
 
 /**
- * Проверить валидность ОГРН (Основной государственный регистрационный номер)
- * ОГРН юрлица: 13 цифр, ОГРНИП: 15 цифр
+ * Проверяет валидность ОГРН (Основной государственный регистрационный номер).
+ * Поддерживает ОГРН юридических лиц (13 цифр) и ОГРНИП (15 цифр).
+ * @param ogrn - ОГРН для проверки (может содержать пробелы и другие символы)
+ * @returns `true` если ОГРН валиден, иначе `false`
+ * @example
+ * validateOGRN('1027700043530') // true (ОГРН юрлица)
+ * validateOGRN('304770000000000') // true (ОГРНИП)
+ * validateOGRN('1234567890123') // false (невалидный ОГРН)
  */
 export function validateOGRN(ogrn: string): boolean {
 	const cleaned = ogrn.replace(/\D/g, '');
@@ -85,7 +103,10 @@ export function validateOGRN(ogrn: string): boolean {
 }
 
 /**
- * Проверить ОГРН юридического лица (13 цифр)
+ * Проверяет ОГРН юридического лица (13 цифр) по алгоритму ФНС.
+ * Вычисляет контрольную сумму: последние 12 цифр делятся на 11.
+ * @param ogrn - ОГРН юридического лица (13 цифр)
+ * @returns `true` если ОГРН валиден, иначе `false`
  */
 function validateOGRN13(ogrn: string): boolean {
 	const number = BigInt(ogrn.slice(0, 12));
@@ -94,7 +115,10 @@ function validateOGRN13(ogrn: string): boolean {
 }
 
 /**
- * Проверить ОГРНИП (15 цифр)
+ * Проверяет ОГРНИП (15 цифр) по алгоритму ФНС.
+ * Вычисляет контрольную сумму: последние 14 цифр делятся на 13.
+ * @param ogrn - ОГРНИП (15 цифр)
+ * @returns `true` если ОГРНИП валиден, иначе `false`
  */
 function validateOGRN15(ogrn: string): boolean {
 	const number = BigInt(ogrn.slice(0, 14));
@@ -103,8 +127,14 @@ function validateOGRN15(ogrn: string): boolean {
 }
 
 /**
- * Проверить валидность КПП (Код причины постановки на учет)
- * КПП: 9 цифр
+ * Проверяет валидность КПП (Код причины постановки на учет).
+ * КПП состоит из 9 цифр и включает код налогового органа, причину постановки и порядковый номер.
+ * @param kpp - КПП для проверки (может содержать пробелы и другие символы)
+ * @returns `true` если КПП валиден, иначе `false`
+ * @example
+ * validateKPP('770701001') // true
+ * validateKPP('77070100') // false (слишком короткий)
+ * validateKPP('007701001') // false (невалидный код региона)
  */
 export function validateKPP(kpp: string): boolean {
 	const cleaned = kpp.replace(/\D/g, '');
@@ -127,8 +157,14 @@ export function validateKPP(kpp: string): boolean {
 }
 
 /**
- * Проверить валидность СНИЛС (Страховой номер индивидуального лицевого счёта)
- * СНИЛС: 11 цифр в формате XXX-XXX-XXX YY
+ * Проверяет валидность СНИЛС (Страховой номер индивидуального лицевого счета).
+ * СНИЛС состоит из 11 цифр с контрольной суммой.
+ * @param snils - СНИЛС для проверки (может содержать дефисы и пробелы)
+ * @returns `true` если СНИЛС валиден, иначе `false`
+ * @example
+ * validateSNILS('12345678901') // true (валидный СНИЛС)
+ * validateSNILS('123-456-789 01') // true (с форматированием)
+ * validateSNILS('12345678900') // false (невалидная контрольная сумма)
  */
 export function validateSNILS(snils: string): boolean {
 	const cleaned = snils.replace(/\D/g, '');
@@ -168,16 +204,24 @@ export function validateSNILS(snils: string): boolean {
 }
 
 /**
- * Форматировать ИНН
- * @example formatINN('7707083893') // '7707083893'
+ * Форматирует ИНН, удаляя все нецифровые символы.
+ * @param inn - ИНН для форматирования
+ * @returns ИНН, содержащий только цифры
+ * @example
+ * formatINN('7707-083-893') // '7707083893'
+ * formatINN('7707083893') // '7707083893'
  */
 export function formatINN(inn: string): string {
 	return inn.replace(/\D/g, '');
 }
 
 /**
- * Форматировать СНИЛС
- * @example formatSNILS('12345678901') // '123-456-789 01'
+ * Форматирует СНИЛС в стандартный вид: XXX-XXX-XXX YY.
+ * @param snils - СНИЛС для форматирования
+ * @returns Форматированный СНИЛС или исходная строка, если длина невалидна
+ * @example
+ * formatSNILS('12345678901') // '123-456-789 01'
+ * formatSNILS('1234567890') // '1234567890' (невалидная длина)
  */
 export function formatSNILS(snils: string): string {
 	const cleaned = snils.replace(/\D/g, '');
@@ -187,21 +231,33 @@ export function formatSNILS(snils: string): string {
 }
 
 /**
- * Форматировать ОГРН
+ * Форматирует ОГРН, удаляя все нецифровые символы.
+ * @param ogrn - ОГРН для форматирования
+ * @returns ОГРН, содержащий только цифры
+ * @example
+ * formatOGRN('1027-700-043-530') // '1027700043530'
  */
 export function formatOGRN(ogrn: string): string {
 	return ogrn.replace(/\D/g, '');
 }
 
 /**
- * Форматировать КПП
+ * Форматирует КПП, удаляя все нецифровые символы.
+ * @param kpp - КПП для форматирования
+ * @returns КПП, содержащий только цифры
+ * @example
+ * formatKPP('7707-010-01') // '770701001'
  */
 export function formatKPP(kpp: string): string {
 	return kpp.replace(/\D/g, '');
 }
 
 /**
- * Генерировать случайный ИНН для юрлица (10 цифр) - для тестов
+ * Генерирует случайный валидный ИНН для юридического лица (10 цифр).
+ * Полезно для тестирования и генерации тестовых данных.
+ * @returns Валидный ИНН юридического лица
+ * @example
+ * generateINN10() // '7707083893' (случайный валидный ИНН)
  */
 export function generateINN10(): string {
 	const weights = [2, 4, 10, 3, 5, 9, 4, 6, 8];
@@ -224,7 +280,11 @@ export function generateINN10(): string {
 }
 
 /**
- * Генерировать случайный ИНН для физлица (12 цифр) - для тестов
+ * Генерирует случайный валидный ИНН для физического лица (12 цифр).
+ * Полезно для тестирования и генерации тестовых данных.
+ * @returns Валидный ИНН физического лица
+ * @example
+ * generateINN12() // '500100732259' (случайный валидный ИНН)
  */
 export function generateINN12(): string {
 	const weights1 = [7, 2, 4, 10, 3, 5, 9, 4, 6, 8];
@@ -256,7 +316,13 @@ export function generateINN12(): string {
 }
 
 /**
- * Определить тип ИНН
+ * Определяет тип ИНН: юридическое лицо, физическое лицо или неизвестный.
+ * @param inn - ИНН для определения типа
+ * @returns Тип ИНН: 'legal' (юрлицо), 'individual' (физлицо) или 'unknown' (невалидный)
+ * @example
+ * getINNType('7707083893') // 'legal'
+ * getINNType('500100732259') // 'individual'
+ * getINNType('1234567890') // 'unknown'
  */
 export function getINNType(inn: string): 'legal' | 'individual' | 'unknown' {
 	const cleaned = inn.replace(/\D/g, '');
@@ -273,7 +339,13 @@ export function getINNType(inn: string): 'legal' | 'individual' | 'unknown' {
 }
 
 /**
- * Определить тип ОГРН
+ * Определяет тип ОГРН: юридическое лицо, индивидуальный предприниматель или неизвестный.
+ * @param ogrn - ОГРН для определения типа
+ * @returns Тип ОГРН: 'legal' (юрлицо), 'individual' (ИП) или 'unknown' (невалидный)
+ * @example
+ * getOGRNType('1027700043530') // 'legal'
+ * getOGRNType('304770000000000') // 'individual'
+ * getOGRNType('1234567890123') // 'unknown'
  */
 export function getOGRNType(ogrn: string): 'legal' | 'individual' | 'unknown' {
 	const cleaned = ogrn.replace(/\D/g, '');
@@ -290,8 +362,14 @@ export function getOGRNType(ogrn: string): 'legal' | 'individual' | 'unknown' {
 }
 
 /**
- * Проверить валидность БИК (Банковский идентификационный код)
- * БИК: 9 цифр
+ * Проверяет валидность БИК (Банковский идентификационный код).
+ * БИК состоит из 9 цифр, первые 2 цифры всегда "04" (код РФ).
+ * @param bik - БИК для проверки (может содержать пробелы и другие символы)
+ * @returns `true` если БИК валиден, иначе `false`
+ * @example
+ * validateBIK('044525225') // true
+ * validateBIK('04452522') // false (слишком короткий)
+ * validateBIK('054525225') // false (не начинается с 04)
  */
 export function validateBIK(bik: string): boolean {
 	const cleaned = bik.replace(/\D/g, '');
@@ -309,7 +387,14 @@ export function validateBIK(bik: string): boolean {
 }
 
 /**
- * Проверить валидность расчётного счёта
+ * Проверяет валидность расчетного счета по алгоритму ЦБ РФ.
+ * Использует контрольные коэффициенты для валидации.
+ * @param account - Номер расчетного счета (20 цифр)
+ * @param bik - БИК банка (9 цифр)
+ * @returns `true` если счет валиден для данного БИК, иначе `false`
+ * @example
+ * validateAccount('40702810100000000001', '044525225') // true
+ * validateAccount('40702810100000000000', '044525225') // false (невалидная контрольная сумма)
  */
 export function validateAccount(account: string, bik: string): boolean {
 	const cleanedAccount = account.replace(/\D/g, '');

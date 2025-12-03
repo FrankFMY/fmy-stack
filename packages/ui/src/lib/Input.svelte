@@ -4,9 +4,9 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { clsx } from 'clsx';
+	import type { Snippet } from 'svelte';
+	import { cn } from './utils';
 
 	interface Props extends HTMLInputAttributes {
 		label?: string;
@@ -31,6 +31,8 @@
 
 	// Use $derived to ensure reactivity
 	const uid = $derived(id ?? `input-${Math.random().toString(36).slice(2, 9)}`);
+	const errorId = $derived(`${uid}-error`);
+	const hintId = $derived(`${uid}-hint`);
 
 	const inputStyles = `
 		block w-full rounded-lg border px-3 py-2
@@ -54,7 +56,7 @@
 	`;
 
 	let computedInputClass = $derived(
-		clsx(
+		cn(
 			inputStyles,
 			error ? errorBorder : normalBorder,
 			leftIcon && 'pl-10',
@@ -80,7 +82,14 @@
 			</div>
 		{/if}
 
-		<input id={uid} class={computedInputClass} {disabled} {...restProps} />
+		<input
+			id={uid}
+			class={computedInputClass}
+			{disabled}
+			aria-invalid={!!error}
+			aria-describedby={error ? errorId : hint ? hintId : undefined}
+			{...restProps}
+		/>
 
 		{#if rightIcon}
 			<div
@@ -92,8 +101,8 @@
 	</div>
 
 	{#if error}
-		<p class="mt-1.5 text-sm text-red-600 dark:text-red-400">{error}</p>
+		<p id={errorId} class="mt-1.5 text-sm text-red-600 dark:text-red-400">{error}</p>
 	{:else if hint}
-		<p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">{hint}</p>
+		<p id={hintId} class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">{hint}</p>
 	{/if}
 </div>

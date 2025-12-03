@@ -4,7 +4,7 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
-	import { clsx } from 'clsx';
+	import { cn } from './utils';
 
 	interface Props {
 		variant?: 'text' | 'circular' | 'rectangular' | 'rounded';
@@ -32,14 +32,14 @@
 	};
 
 	// Use $derived to make it reactive
-	const baseClass = $derived(clsx('bg-gray-200 dark:bg-gray-700', animate && 'animate-pulse'));
+	const baseClass = $derived(cn('bg-gray-200 dark:bg-gray-700', animate && 'animate-pulse'));
 </script>
 
 {#if variant === 'text' && lines > 1}
-	<div class={clsx('space-y-2', className)}>
+	<div class={cn('space-y-2', className)} aria-hidden="true">
 		{#each Array(lines) as _, i}
 			<div
-				class={clsx(baseClass, variantStyles.text)}
+				class={cn(baseClass, variantStyles.text)}
 				style:width={i === lines - 1 ? '75%' : (width ?? '100%')}
 				style:height
 			></div>
@@ -47,8 +47,9 @@
 	</div>
 {:else}
 	<div
-		class={clsx(baseClass, variantStyles[variant], className)}
+		class={cn(baseClass, variantStyles[variant], className)}
 		style:width={width ?? (variant === 'circular' ? '40px' : '100%')}
 		style:height={height ?? (variant === 'circular' ? '40px' : undefined)}
+		aria-hidden="true"
 	></div>
 {/if}

@@ -4,16 +4,36 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts" module>
+	/**
+	 * Тип темы приложения.
+	 * - 'light' - светлая тема
+	 * - 'dark' - темная тема
+	 * - 'system' - автоматический выбор на основе системных настроек
+	 */
 	export type Theme = 'light' | 'dark' | 'system';
 
 	const THEME_KEY = 'frankfmy-theme';
 	let currentTheme = $state<Theme>('system');
 	let resolvedTheme = $state<'light' | 'dark'>('light');
 
+	/**
+	 * Получает текущую установленную тему.
+	 * @returns Текущая тема ('light', 'dark' или 'system').
+	 * @example
+	 * const theme = getTheme(); // 'light' | 'dark' | 'system'
+	 */
 	export function getTheme(): Theme {
 		return currentTheme;
 	}
 
+	/**
+	 * Устанавливает тему приложения.
+	 * Сохраняет выбор пользователя в localStorage и применяет тему немедленно.
+	 * @param theme - Тема для установки ('light', 'dark' или 'system').
+	 * @example
+	 * setTheme('dark'); // Установить темную тему
+	 * setTheme('system'); // Использовать системные настройки
+	 */
 	export function setTheme(theme: Theme): void {
 		currentTheme = theme;
 
@@ -23,11 +43,24 @@
 		}
 	}
 
+	/**
+	 * Переключает между светлой и темной темой.
+	 * Переключает на противоположную тему (light ↔ dark).
+	 * @example
+	 * toggleTheme(); // Переключить с текущей на противоположную
+	 */
 	export function toggleTheme(): void {
 		const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
 		setTheme(newTheme);
 	}
 
+	/**
+	 * Получает реальную применяемую тему (разрешенную).
+	 * Если выбрана тема 'system', возвращает фактически применяемую тему на основе системных настроек.
+	 * @returns Фактическая тема: 'light' или 'dark'.
+	 * @example
+	 * const resolved = getResolvedTheme(); // 'light' или 'dark'
+	 */
 	export function getResolvedTheme(): 'light' | 'dark' {
 		return resolvedTheme;
 	}
@@ -76,8 +109,13 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
+	/**
+	 * Пропсы компонента ThemeProvider.
+	 */
 	interface Props {
+		/** Тема по умолчанию, если в localStorage нет сохраненной темы. */
 		defaultTheme?: Theme;
+		/** Дочерний контент (слот для рендеринга). */
 		children: Snippet;
 	}
 

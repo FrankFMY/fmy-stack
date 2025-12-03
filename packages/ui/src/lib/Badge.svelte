@@ -4,8 +4,8 @@
   @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
 -->
 <script lang="ts">
+	import { cn } from './utils';
 	import type { Snippet } from 'svelte';
-	import { clsx } from 'clsx';
 
 	interface Props {
 		variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
@@ -48,13 +48,13 @@
 	};
 
 	let computedClass = $derived(
-		clsx(baseStyles, variantStyles[variant], sizeStyles[size], className)
+		cn(baseStyles, variantStyles[variant], sizeStyles[size], className)
 	);
 </script>
 
 <span class={computedClass}>
 	{#if dot}
-		<span class={clsx('mr-1.5 h-1.5 w-1.5 rounded-full', dotColors[variant])}></span>
+		<span class={cn('mr-1.5 h-1.5 w-1.5 rounded-full', dotColors[variant])}></span>
 	{/if}
 	{#if children}
 		{@render children()}

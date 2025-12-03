@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/core",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "Фундаментальные TypeScript утилиты: даты, деньги, строки, телефоны, валидация ИНН/ОГРН, хэширование",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",
@@ -50,7 +50,11 @@
 			"import": "./dist/types/index.js"
 		}
 	},
-	"files": ["dist", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc --watch",

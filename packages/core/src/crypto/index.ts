@@ -10,23 +10,36 @@
 import { nanoid } from 'nanoid';
 
 /**
- * Генерировать UUID v4
+ * Генерирует UUID версии 4 (случайный UUID).
+ * Использует криптографически безопасный генератор случайных чисел.
+ * @returns UUID в формате xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+ * @example
+ * generateUUID() // '550e8400-e29b-41d4-a716-446655440000'
  */
 export function generateUUID(): string {
 	return crypto.randomUUID();
 }
 
 /**
- * Генерировать nanoid
- * @param length Длина строки (по умолчанию 21)
+ * Генерирует короткий уникальный идентификатор (nanoid).
+ * Использует URL-friendly алфавит для безопасного использования в URL.
+ * @param length - Длина генерируемой строки (по умолчанию 21)
+ * @returns Уникальная строка указанной длины
+ * @example
+ * generateNanoid() // 'V1StGXR8_Z5jdHi6B-myT'
+ * generateNanoid(8) // '2K3jF7xP'
  */
 export function generateNanoid(length = 21): string {
 	return nanoid(length);
 }
 
 /**
- * Генерировать криптографически безопасный токен
- * @param length Количество байт (по умолчанию 32)
+ * Генерирует криптографически безопасный токен в шестнадцатеричном формате.
+ * Полезно для создания API ключей, секретных токенов и т.д.
+ * @param length - Количество байт (по умолчанию 32, результат будет в 2 раза длиннее)
+ * @returns Шестнадцатеричная строка токена
+ * @example
+ * generateToken(16) // 'a1b2c3d4e5f678901234567890abcdef'
  */
 export function generateToken(length = 32): string {
 	const bytes = new Uint8Array(length);
@@ -37,7 +50,13 @@ export function generateToken(length = 32): string {
 }
 
 /**
- * Генерировать случайное число в диапазоне
+ * Генерирует криптографически безопасное случайное число в заданном диапазоне.
+ * Включает как минимальное, так и максимальное значения.
+ * @param min - Минимальное значение (включительно)
+ * @param max - Максимальное значение (включительно)
+ * @returns Случайное целое число в диапазоне [min, max]
+ * @example
+ * generateSecureRandom(1, 10) // Может вернуть любое число от 1 до 10
  */
 export function generateSecureRandom(min: number, max: number): number {
 	const range = max - min + 1;
@@ -47,7 +66,12 @@ export function generateSecureRandom(min: number, max: number): number {
 }
 
 /**
- * Хэшировать строку с помощью SHA-256
+ * Хэширует строку с помощью алгоритма SHA-256.
+ * Возвращает хэш в шестнадцатеричном формате.
+ * @param text - Строка для хэширования
+ * @returns Promise с SHA-256 хэшем в hex формате
+ * @example
+ * await hashSHA256('hello world') // 'b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9'
  */
 export async function hashSHA256(text: string): Promise<string> {
 	const encoder = new TextEncoder();
@@ -58,7 +82,12 @@ export async function hashSHA256(text: string): Promise<string> {
 }
 
 /**
- * Хэшировать строку с помощью SHA-512
+ * Хэширует строку с помощью алгоритма SHA-512.
+ * Возвращает хэш в шестнадцатеричном формате.
+ * @param text - Строка для хэширования
+ * @returns Promise с SHA-512 хэшем в hex формате
+ * @example
+ * await hashSHA512('hello world') // '309ecc489c12d6eb4cc40f50c902f2b4d0ed77ee511a7c7a9bcd3ca86d4cd86f989dd35bc5ff499670da34255b45b0cfd830e81f605dcf7dc5542e93ae9cd76f'
  */
 export async function hashSHA512(text: string): Promise<string> {
 	const encoder = new TextEncoder();
@@ -69,8 +98,14 @@ export async function hashSHA512(text: string): Promise<string> {
 }
 
 /**
- * Хэшировать пароль с использованием Bun.password (bcrypt)
- * В среде Bun использует bcrypt, иначе SHA-256 с солью
+ * Хэширует пароль для безопасного хранения.
+ * В среде Bun использует bcrypt (рекомендуется), иначе SHA-256 с солью.
+ * @param password - Пароль для хэширования
+ * @returns Promise с хэшированным паролем
+ * @example
+ * const hash = await hashPassword('mySecretPassword');
+ * // В Bun: '$2b$12$...'
+ * // В других средах: '$sha256$salt$hash'
  */
 export async function hashPassword(password: string): Promise<string> {
 	const bunPassword = getBunPassword();
@@ -89,7 +124,16 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 /**
- * Проверить пароль против хэша
+ * Проверяет пароль против хэша.
+ * Поддерживает как bcrypt хэши (Bun), так и SHA-256 с солью.
+ * @param password - Пароль для проверки
+ * @param hash - Хэш пароля для сравнения
+ * @returns Promise с результатом проверки (true/false)
+ * @example
+ * const isValid = await verifyPassword('mySecretPassword', hash);
+ * if (isValid) {
+ *   // Пароль верный
+ * }
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
 	const bunPassword = getBunPassword();
@@ -112,8 +156,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 /**
- * Генерировать OTP код (одноразовый пароль)
- * @param length Длина кода (по умолчанию 6)
+ * Генерирует OTP (одноразовый пароль) состоящий только из цифр.
+ * @param length - Длина кода (по умолчанию 6)
+ * @returns Строка из цифр указанной длины
+ * @example
+ * generateOTP() // '123456'
+ * generateOTP(8) // '98765432'
  */
 export function generateOTP(length = 6): string {
 	const digits = '0123456789';
@@ -125,7 +173,10 @@ export function generateOTP(length = 6): string {
 }
 
 /**
- * Генерировать API ключ
+ * Генерирует API ключ с префиксом 'fmy_'.
+ * @returns API ключ в формате 'fmy_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+ * @example
+ * generateApiKey() // 'fmy_a1b2c3d4e5f678901234567890abcdef1234567890ab'
  */
 export function generateApiKey(): string {
 	const prefix = 'fmy';
@@ -134,7 +185,12 @@ export function generateApiKey(): string {
 }
 
 /**
- * Генерировать случайную строку для пароля
+ * Генерирует случайную строку, подходящую для использования в качестве пароля.
+ * Гарантирует наличие хотя бы одного символа каждого типа и перемешивает результат.
+ * @param length - Длина пароля (по умолчанию 16, минимум 4)
+ * @returns Случайная строка с символами разных типов
+ * @example
+ * generateRandomPassword() // 'Ab3!xYz9$mNp2qR5'
  */
 export function generateRandomPassword(length = 16): string {
 	const lowercase = 'abcdefghijklmnopqrstuvwxyz';
@@ -160,7 +216,15 @@ export function generateRandomPassword(length = 16): string {
 }
 
 /**
- * Проверить сложность пароля
+ * Проверяет сложность пароля и возвращает оценку с рекомендациями.
+ * @param password - Пароль для проверки
+ * @returns Объект с оценкой сложности, рекомендациями и флагом надежности
+ * @example
+ * checkPasswordStrength('weak')
+ * // { score: 1, feedback: ['Минимум 8 символов', ...], isStrong: false }
+ *
+ * checkPasswordStrength('StrongP@ssw0rd')
+ * // { score: 6, feedback: [], isStrong: true }
  */
 export function checkPasswordStrength(password: string): {
 	score: number;
@@ -223,7 +287,14 @@ export function checkPasswordStrength(password: string): {
 }
 
 /**
- * Безопасное сравнение строк (защита от timing attacks)
+ * Безопасно сравнивает две строки, предотвращая timing attacks.
+ * Время выполнения не зависит от того, насколько строки отличаются.
+ * @param a - Первая строка
+ * @param b - Вторая строка
+ * @returns `true` если строки идентичны, иначе `false`
+ * @example
+ * secureCompare('secret', 'secret') // true
+ * secureCompare('secret', 'Secret') // false
  */
 export function secureCompare(a: string, b: string): boolean {
 	if (a.length !== b.length) {
@@ -239,7 +310,12 @@ export function secureCompare(a: string, b: string): boolean {
 }
 
 /**
- * Кодировать в Base64
+ * Кодирует строку в Base64.
+ * Работает как в Node.js (Buffer), так и в браузере (btoa).
+ * @param text - Строка для кодирования
+ * @returns Base64 представление строки
+ * @example
+ * encodeBase64('Hello World') // 'SGVsbG8gV29ybGQ='
  */
 export function encodeBase64(text: string): string {
 	if (typeof Buffer !== 'undefined') {
@@ -249,7 +325,13 @@ export function encodeBase64(text: string): string {
 }
 
 /**
- * Декодировать из Base64
+ * Декодирует строку из Base64.
+ * Работает как в Node.js (Buffer), так и в браузере (atob).
+ * @param encoded - Base64 строка для декодирования
+ * @returns Декодированная строка
+ * @throws Ошибка если строка не является валидным Base64
+ * @example
+ * decodeBase64('SGVsbG8gV29ybGQ=') // 'Hello World'
  */
 export function decodeBase64(encoded: string): string {
 	if (typeof Buffer !== 'undefined') {
@@ -259,14 +341,24 @@ export function decodeBase64(encoded: string): string {
 }
 
 /**
- * Кодировать в Base64 URL-safe
+ * Кодирует строку в URL-safe Base64.
+ * Заменяет символы + и / на - и _ соответственно, удаляет padding (=).
+ * @param text - Строка для кодирования
+ * @returns URL-safe Base64 строка
+ * @example
+ * encodeBase64Url('Hello World') // 'SGVsbG8gV29ybGQ'
  */
 export function encodeBase64Url(text: string): string {
 	return encodeBase64(text).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
 /**
- * Декодировать из Base64 URL-safe
+ * Декодирует строку из URL-safe Base64.
+ * @param encoded - URL-safe Base64 строка
+ * @returns Декодированная строка
+ * @throws Ошибка если строка не является валидным Base64
+ * @example
+ * decodeBase64Url('SGVsbG8gV29ybGQ') // 'Hello World'
  */
 export function decodeBase64Url(encoded: string): string {
 	let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
@@ -288,19 +380,30 @@ function shuffleString(str: string): string {
 }
 
 /**
- * Получить Bun.password API если доступен
+ * Тип для глобального объекта с возможным Bun API.
  */
-function getBunPassword(): BunPasswordAPI | null {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const global = globalThis as any;
-	if (typeof global.Bun?.password?.hash === 'function') {
-		return global.Bun.password as BunPasswordAPI;
-	}
-	return null;
+interface GlobalWithBun extends Window {
+	Bun?: {
+		password?: {
+			hash?: (password: string, options?: { algorithm: string; cost: number }) => Promise<string>;
+			verify?: (password: string, hash: string) => Promise<boolean>;
+		};
+	};
 }
 
 interface BunPasswordAPI {
 	hash(password: string, options?: { algorithm: string; cost: number }): Promise<string>;
 	verify(password: string, hash: string): Promise<boolean>;
+}
+
+/**
+ * Получить Bun.password API если доступен
+ */
+function getBunPassword(): BunPasswordAPI | null {
+	const global = globalThis as unknown as GlobalWithBun;
+	if (typeof global.Bun?.password?.hash === 'function') {
+		return global.Bun.password as BunPasswordAPI;
+	}
+	return null;
 }
 

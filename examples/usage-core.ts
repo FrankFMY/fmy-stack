@@ -3,35 +3,35 @@
  */
 
 import {
+	// Arrays
+	chunk,
+	debounce,
+	groupBy,
+	throttle,
+	// Business validation
+	validateINN,
+	validateKPP,
+	validateOGRN,
+	validateSNILS,
+	// Crypto
+	generateToken,
+	hashPassword,
 	// Date utilities
 	formatDateRU,
 	formatRelativeTime,
 	isBusinessDay,
 	// Money utilities
-	formatMoneyRU,
 	calcVAT,
-	// String utilities
-	pluralize,
-	slugify,
-	truncate,
-	maskString,
+	formatMoneyRU,
 	// Phone utilities
 	cleanPhone,
 	formatPhoneRU,
 	validatePhoneRU,
-	// Business validation
-	validateINN,
-	validateOGRN,
-	validateKPP,
-	validateSNILS,
-	// Crypto
-	hashPassword,
-	generateToken,
-	// Arrays
-	groupBy,
-	chunk,
-	debounce,
-	throttle
+	// String utilities
+	maskString,
+	pluralize,
+	slugify,
+	truncate
 } from '@frankfmy/core';
 
 // ============================================
@@ -97,7 +97,7 @@ console.log('Valid SNILS:', validateSNILS('11223344595')); // true
 
 console.log('\n=== Crypto Utilities ===');
 const hash = await hashPassword('password123');
-console.log('Password hash:', hash.substring(0, 30) + '...');
+console.log('Password hash:', `${hash.substring(0, 30)}...`);
 console.log('Token:', generateToken(32));
 
 // ============================================
@@ -117,12 +117,11 @@ console.log('Grouped by role:', groupBy(users, 'role'));
 console.log('Chunked:', chunk([1, 2, 3, 4, 5, 6, 7], 3));
 
 // Debounce example
-const searchFn = debounce((query: string) => {
+const _searchFn = debounce((query: string) => {
 	console.log('Searching:', query);
 }, 300);
 
 // Throttle example
-const scrollFn = throttle(() => {
+const _scrollFn = throttle(() => {
 	console.log('Scroll event');
 }, 100);
-

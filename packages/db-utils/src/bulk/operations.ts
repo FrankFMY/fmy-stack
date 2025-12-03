@@ -1,20 +1,50 @@
 /**
- * @fileoverview FrankFMY Platform — Initiative Development
- * @author Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
+ * @fileoverview FrankFMY Platform — Initiative Development / Инициативная разработка
+ * @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
+ * @copyright 2025 Artyom Pryanishnikov
+ * @license PolyForm-Shield-1.0.0
+ *
+ * Утилиты для массовых операций в Drizzle ORM
  */
 
-import type { PgDatabase, PgTable, PgInsertValue } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import type { PgDatabase, PgInsertValue, PgTable } from 'drizzle-orm/pg-core';
 
+/**
+ * Тип для результата Drizzle insert операции с возможным rowCount.
+ */
+interface DrizzleInsertResult {
+	rowCount?: number;
+}
+
+/**
+ * Опции для массовых операций.
+ */
 export interface BulkOptions {
+	/** Размер чанка для обработки (по умолчанию 1000) */
 	chunkSize?: number;
+	/** Пропускать дубликаты при вставке (по умолчанию false) */
 	skipDuplicates?: boolean;
 }
 
 /**
- * Bulk insert with chunking for large datasets
+ * Выполняет массовую вставку данных с разбивкой на чанки.
+ * Полезно для вставки больших объемов данных без перегрузки базы данных.
+ * @template TDb Тип объекта базы данных
+ * @template TTable Тип таблицы Drizzle ORM
+ * @param db - Экземпляр базы данных Drizzle ORM
+ * @param table - Таблица для вставки данных
+ * @param data - Массив данных для вставки
+ * @param options - Опции массовой вставки
+ * @returns Количество вставленных записей
+ * @example
+ * const inserted = await bulkInsert(db, users, [
+ *   { name: 'John', email: 'john@example.com' },
+ *   { name: 'Jane', email: 'jane@example.com' }
+ * ], { chunkSize: 500, skipDuplicates: true });
  */
 export async function bulkInsert<
+	// biome-ignore lint/suspicious/noExplicitAny: Drizzle ORM requires any for PgDatabase generic parameter
 	TDb extends PgDatabase<any>,
 	TTable extends PgTable
 >(
@@ -34,8 +64,11 @@ export async function bulkInsert<
 
 	for (const chunk of chunks) {
 		if (skipDuplicates) {
-			const result = await db.insert(table).values(chunk).onConflictDoNothing();
-			inserted += (result as any).rowCount ?? chunk.length;
+			const result = (await db
+				.insert(table)
+				.values(chunk)
+				.onConflictDoNothing()) as DrizzleInsertResult;
+			inserted += result.rowCount ?? chunk.length;
 		} else {
 			await db.insert(table).values(chunk);
 			inserted += chunk.length;
@@ -46,10 +79,25 @@ export async function bulkInsert<
 }
 
 /**
- * Bulk update with chunking
- * Note: This is a simplified version. For complex updates, use transactions.
+ * Выполняет массовое обновление данных с разбивкой на чанки.
+ * Каждый чанк обрабатывается в отдельной транзакции.
+ * **Примечание**: Это упрощенная версия. Для сложных обновлений используйте транзакции напрямую.
+ * @template TDb Тип объекта базы данных
+ * @param db - Экземпляр базы данных Drizzle ORM
+ * @param tableName - Имя таблицы для обновления
+ * @param data - Массив объектов с id и полями для обновления
+ * @param options - Опции массового обновления
+ * @returns Количество обновленных записей
+ * @example
+ * const updated = await bulkUpdate(db, 'users', [
+ *   { id: 'uuid1', name: 'John Updated', email: 'new@example.com' },
+ *   { id: 'uuid2', name: 'Jane Updated' }
+ * ], { chunkSize: 500 });
  */
-export async function bulkUpdate<TDb extends PgDatabase<any>>(
+export async function bulkUpdate<
+	// biome-ignore lint/suspicious/noExplicitAny: Drizzle ORM requires any for PgDatabase generic parameter
+	TDb extends PgDatabase<any>
+>(
 	db: TDb,
 	tableName: string,
 	data: Array<{ id: string; [key: string]: unknown }>,
@@ -86,9 +134,28 @@ export async function bulkUpdate<TDb extends PgDatabase<any>>(
 }
 
 /**
- * Bulk upsert (insert or update on conflict)
+ * Выполняет массовую операцию upsert (вставка или обновление при конфликте).
+ * Если запись с указанным ключом конфликта существует, она обновляется, иначе вставляется новая.
+ * @template TDb Тип объекта базы данных
+ * @template TTable Тип таблицы Drizzle ORM
+ * @param db - Экземпляр базы данных Drizzle ORM
+ * @param table - Таблица для upsert операции
+ * @param data - Массив данных для вставки/обновления
+ * @param conflictTarget - Колонка, по которой определяется конфликт (unique constraint)
+ * @param updateColumns - Колонки для обновления при конфликте
+ * @param options - Опции массового upsert
+ * @returns Количество обработанных записей (вставленных или обновленных)
+ * @example
+ * const upserted = await bulkUpsert(
+ *   db,
+ *   users,
+ *   [{ email: 'john@example.com', name: 'John' }],
+ *   'email', // конфликт по email
+ *   ['name'] // обновлять только name при конфликте
+ * );
  */
 export async function bulkUpsert<
+	// biome-ignore lint/suspicious/noExplicitAny: Drizzle ORM requires any for PgDatabase generic parameter
 	TDb extends PgDatabase<any>,
 	TTable extends PgTable
 >(
@@ -111,28 +178,34 @@ export async function bulkUpsert<
 	for (const chunk of chunks) {
 		const updateSet = updateColumns.reduce(
 			(acc, col) => {
-				(acc as Record<string, unknown>)[col as string] = sql`EXCLUDED.${sql.identifier(col as string)}`;
+				(acc as Record<string, unknown>)[col as string] =
+					sql`EXCLUDED.${sql.identifier(col as string)}`;
 				return acc;
 			},
 			{} as Record<string, unknown>
 		);
 
-		const result = await db
-			.insert(table)
-			.values(chunk)
-			.onConflictDoUpdate({
-				target: (table as any)[conflictTarget],
-				set: updateSet
-			});
+		// Безопасный доступ к колонке таблицы для conflict target
+		// biome-ignore lint/suspicious/noExplicitAny: Dynamic property access for Drizzle conflict target
+		const conflictColumn = (table as Record<string, any>)[conflictTarget as string];
 
-		upserted += (result as any).rowCount ?? chunk.length;
+		const result = (await db.insert(table).values(chunk).onConflictDoUpdate({
+			target: conflictColumn,
+			set: updateSet
+		})) as DrizzleInsertResult;
+
+		upserted += result.rowCount ?? chunk.length;
 	}
 
 	return upserted;
 }
 
 /**
- * Helper function to chunk an array
+ * Вспомогательная функция для разбивки массива на чанки заданного размера.
+ * @template T Тип элементов массива
+ * @param array - Исходный массив
+ * @param size - Размер каждого чанка
+ * @returns Массив чанков
  */
 function chunkArray<T>(array: T[], size: number): T[][] {
 	const chunks: T[][] = [];
@@ -141,4 +214,3 @@ function chunkArray<T>(array: T[], size: number): T[][] {
 	}
 	return chunks;
 }
-

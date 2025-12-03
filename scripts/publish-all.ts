@@ -22,8 +22,29 @@ type Registry = 'github' | 'npm';
 
 async function publishPackage(pkg: string, registry: Registry) {
 	const cwd = `packages/${pkg}`;
+	const pkgJson = await Bun.file(`${cwd}/package.json`).json();
+	const name = pkgJson.name;
+	const version = pkgJson.version;
 
-	console.log(`\n📦 Publishing @frankfmy/${pkg} to ${registry}...`);
+	console.log(`\n📦 Checking @frankfmy/${pkg}...`);
+
+	try {
+		const remoteVersion = (
+			await $`npm view ${name} version --registry=${
+				registry === 'github' ? 'https://npm.pkg.github.com' : 'https://registry.npmjs.org'
+			}`.text()
+		).trim();
+
+		if (remoteVersion === version) {
+			console.log(`⏭️  @frankfmy/${pkg} v${version} already published. Skipping.`);
+			return;
+		}
+	} catch {
+		// Package might not exist yet
+		console.log(`🆕 @frankfmy/${pkg} not found in registry. Publishing v${version}...`);
+	}
+
+	console.log(`🚀 Publishing @frankfmy/${pkg} v${version} to ${registry}...`);
 
 	try {
 		if (registry === 'github') {
@@ -47,7 +68,7 @@ async function main() {
 	}
 
 	console.log(`\n🚀 Publishing all packages to ${registry.toUpperCase()}...\n`);
-	console.log('=' .repeat(50));
+	console.log('='.repeat(50));
 
 	// Build first
 	console.log('\n🔨 Building all packages...');
@@ -58,12 +79,13 @@ async function main() {
 		await publishPackage(pkg, registry);
 	}
 
-	console.log('\n' + '='.repeat(50));
+	console.log(`\n${'='.repeat(50)}`);
 	console.log(`\n🎉 All packages published to ${registry.toUpperCase()}!`);
 
 	if (registry === 'github') {
 		console.log('\n📋 To install in projects, add to .npmrc:');
 		console.log('   @frankfmy:registry=https://npm.pkg.github.com');
+		// biome-ignore lint/suspicious/noTemplateCurlyInString: This is a literal string to be printed
 		console.log('   //npm.pkg.github.com/:_authToken=${NPM_TOKEN}');
 	} else {
 		console.log('\n📋 To install: bun add @frankfmy/core @frankfmy/ui ...');
@@ -74,4 +96,3 @@ main().catch((err) => {
 	console.error(err);
 	process.exit(1);
 });
-

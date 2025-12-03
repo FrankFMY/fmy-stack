@@ -2,20 +2,18 @@
  * @fileoverview Tests for function utilities
  */
 
-import { describe, expect, test, mock, beforeEach, afterEach } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import {
-	debounce,
-	debounceImmediate,
-	throttle,
-	throttleWithTrailing,
-	memoize,
-	once,
-	noop,
-	identity,
 	compose,
+	debounce,
+	identity,
+	memoize,
+	noop,
+	once,
 	pipe,
+	retry,
 	sleep,
-	retry
+	throttle
 } from '../functions/index.js';
 
 describe('debounce', () => {
@@ -58,10 +56,10 @@ describe('throttle', () => {
 describe('memoize', () => {
 	test('should cache results', () => {
 		let callCount = 0;
-		const expensive = memoize((n: number) => {
+		const expensive = memoize(((n: number): number => {
 			callCount++;
 			return n * 2;
-		});
+		}) as (...args: unknown[]) => unknown) as (n: number) => number;
 
 		expect(expensive(5)).toBe(10);
 		expect(expensive(5)).toBe(10);
@@ -160,4 +158,3 @@ describe('retry', () => {
 		await expect(retry(fn, 2, 10)).rejects.toThrow('always fails');
 	});
 });
-

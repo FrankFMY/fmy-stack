@@ -8,7 +8,8 @@
  */
 
 /**
- * Валюты
+ * Поддерживаемые валюты в системе.
+ * Используются для форматирования денежных сумм и конвертаций.
  */
 export const Currency = {
 	RUB: 'RUB',
@@ -18,10 +19,14 @@ export const Currency = {
 	CNY: 'CNY'
 } as const;
 
+/**
+ * Тип валюты - одно из значений Currency.
+ */
 export type Currency = (typeof Currency)[keyof typeof Currency];
 
 /**
- * Символы валют
+ * Символы валют для форматирования.
+ * Сопоставляет код валюты с её символом.
  */
 const CURRENCY_SYMBOLS: Record<Currency, string> = {
 	RUB: '₽',
@@ -32,7 +37,8 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
 };
 
 /**
- * Ставки НДС
+ * Стандартные ставки НДС (в процентах).
+ * Используются для расчета налогов в различных странах.
  */
 export const VATRate = {
 	STANDARD: 20,
@@ -40,12 +46,20 @@ export const VATRate = {
 	ZERO: 0
 } as const;
 
+/**
+ * Тип ставки НДС - одно из значений VATRate.
+ */
 export type VATRate = (typeof VATRate)[keyof typeof VATRate];
 
 /**
- * Форматировать сумму денег
- * @example formatMoney(1234.56) // "1 234.56 ₽"
- * @example formatMoney(1234.56, 'USD') // "1 234.56 $"
+ * Форматирует денежную сумму с разделителями тысяч и символом валюты.
+ * Использует стандартные разделители: пробел для тысяч, точка для дробной части.
+ * @param amount - Сумма для форматирования
+ * @param currency - Код валюты из Currency (по умолчанию RUB)
+ * @returns Отформатированная строка с символом валюты
+ * @example
+ * formatMoney(1234.56) // "1 234.56 ₽"
+ * formatMoney(1234.56, 'USD') // "1 234.56 $"
  */
 export function formatMoney(amount: number, currency: Currency = 'RUB'): string {
 	const formatted = formatNumber(amount);
@@ -54,8 +68,12 @@ export function formatMoney(amount: number, currency: Currency = 'RUB'): string 
 }
 
 /**
- * Форматировать сумму денег в русском формате
- * @example formatMoneyRU(1234567.89) // "1 234 567,89 ₽"
+ * Форматирует денежную сумму в российском формате.
+ * Использует запятую как разделитель дробной части и пробел как разделитель тысяч.
+ * @param amount - Сумма для форматирования
+ * @returns Отформатированная строка в формате "X XXX,XX ₽"
+ * @example
+ * formatMoneyRU(1234567.89) // "1 234 567,89 ₽"
  */
 export function formatMoneyRU(amount: number): string {
 	const [intPart, decPart] = amount.toFixed(2).split('.');
@@ -64,9 +82,14 @@ export function formatMoneyRU(amount: number): string {
 }
 
 /**
- * Форматировать сумму денег кратко
- * @example formatMoneyShort(1500000) // "1.5M ₽"
- * @example formatMoneyShort(1500) // "1.5K ₽"
+ * Форматирует денежную сумму в кратком формате (K, M, B).
+ * Удобно для отображения больших сумм в компактном виде.
+ * @param amount - Сумма для форматирования
+ * @param currency - Код валюты из Currency (по умолчанию RUB)
+ * @returns Краткая форма суммы (например, "1.5M ₽", "2.3K $")
+ * @example
+ * formatMoneyShort(1500000) // "1.5M ₽"
+ * formatMoneyShort(1500) // "1.5K ₽"
  */
 export function formatMoneyShort(amount: number, currency: Currency = 'RUB'): string {
 	const symbol = CURRENCY_SYMBOLS[currency];
@@ -107,7 +130,7 @@ export function parseMoney(text: string): number {
 	}
 
 	const result = parseFloat(normalized);
-	return isNaN(result) ? 0 : result;
+	return Number.isNaN(result) ? 0 : result;
 }
 
 /**
@@ -118,8 +141,13 @@ export function roundMoney(amount: number): number {
 }
 
 /**
- * Рассчитать НДС
- * @example calcVAT(1000, 20) // { net: 833.33, vat: 166.67, gross: 1000 }
+ * Рассчитывает НДС от общей суммы (включенный НДС).
+ * Разбирает сумму с НДС на чистую сумму, сумму НДС и общую сумму.
+ * @param amount - Сумма с включенным НДС
+ * @param rate - Ставка НДС в процентах (по умолчанию VATRate.STANDARD = 20)
+ * @returns Объект с разбором суммы: { net: чистая сумма, vat: сумма НДС, gross: общая сумма }
+ * @example
+ * calcVAT(1000, 20) // { net: 833.33, vat: 166.67, gross: 1000 }
  */
 export function calcVAT(
 	amount: number,
@@ -137,8 +165,13 @@ export function calcVAT(
 }
 
 /**
- * Добавить НДС к сумме
- * @example addVAT(1000, 20) // { net: 1000, vat: 200, gross: 1200 }
+ * Добавляет НДС к чистой сумме.
+ * Рассчитывает сумму НДС и общую сумму с НДС.
+ * @param amount - Чистая сумма без НДС
+ * @param rate - Ставка НДС в процентах (по умолчанию VATRate.STANDARD = 20)
+ * @returns Объект с расчетом: { net: чистая сумма, vat: сумма НДС, gross: общая сумма }
+ * @example
+ * addVAT(1000, 20) // { net: 1000, vat: 200, gross: 1200 }
  */
 export function addVAT(
 	amount: number,
@@ -156,8 +189,13 @@ export function addVAT(
 }
 
 /**
- * Рассчитать скидку
- * @example calcDiscount(1000, 15) // { original: 1000, discount: 150, final: 850 }
+ * Рассчитывает скидку от цены.
+ * Вычисляет сумму скидки и итоговую цену после применения скидки.
+ * @param price - Исходная цена
+ * @param discountPercent - Процент скидки (0-100)
+ * @returns Объект с расчетом скидки: { original: исходная цена, discount: сумма скидки, final: итоговая цена }
+ * @example
+ * calcDiscount(1000, 15) // { original: 1000, discount: 150, final: 850 }
  */
 export function calcDiscount(
 	price: number,
@@ -175,8 +213,13 @@ export function calcDiscount(
 }
 
 /**
- * Рассчитать процент скидки
- * @example calcDiscountPercent(1000, 850) // 15
+ * Вычисляет процент скидки по исходной и итоговой цене.
+ * @param originalPrice - Исходная цена
+ * @param finalPrice - Цена после скидки
+ * @returns Процент скидки (0-100). Возвращает 0 если originalPrice = 0
+ * @example
+ * calcDiscountPercent(1000, 850) // 15
+ * calcDiscountPercent(200, 180) // 10
  */
 export function calcDiscountPercent(originalPrice: number, finalPrice: number): number {
 	if (originalPrice === 0) return 0;
@@ -184,8 +227,13 @@ export function calcDiscountPercent(originalPrice: number, finalPrice: number): 
 }
 
 /**
- * Маскировать номер карты
- * @example formatCreditCard("4111111111111111") // "•••• 1111"
+ * Маскирует номер банковской карты, показывая только последние 4 цифры.
+ * Заменяет все цифры кроме последних 4 на звездочки.
+ * @param number - Номер карты (может содержать пробелы и другие символы)
+ * @returns Замаскированный номер вида "•••• XXXX"
+ * @example
+ * formatCreditCard("4111111111111111") // "•••• 1111"
+ * formatCreditCard("4111 1111 1111 1111") // "•••• 1111"
  */
 export function formatCreditCard(number: string): string {
 	const cleaned = number.replace(/\D/g, '');
@@ -195,8 +243,12 @@ export function formatCreditCard(number: string): string {
 }
 
 /**
- * Форматировать номер карты с пробелами
- * @example formatCreditCardFull("4111111111111111") // "4111 1111 1111 1111"
+ * Форматирует полный номер банковской карты с пробелами.
+ * Группирует цифры по 4, добавляя пробелы между группами.
+ * @param number - Номер карты (может содержать пробелы и другие символы)
+ * @returns Форматированный номер вида "XXXX XXXX XXXX XXXX"
+ * @example
+ * formatCreditCardFull("4111111111111111") // "4111 1111 1111 1111"
  */
 export function formatCreditCardFull(number: string): string {
 	const cleaned = number.replace(/\D/g, '');
@@ -204,7 +256,12 @@ export function formatCreditCardFull(number: string): string {
 }
 
 /**
- * Проверить валидность IBAN
+ * Проверяет валидность IBAN (International Bank Account Number).
+ * Реализует алгоритм проверки IBAN согласно стандарту ISO 13616.
+ * @param iban - IBAN для проверки (может содержать пробелы)
+ * @returns `true` если IBAN валиден, иначе `false`
+ * @example
+ * validateIBAN("GB29 NWBK 6016 1331 9268 19") // true
  */
 export function validateIBAN(iban: string): boolean {
 	const cleaned = iban.replace(/\s/g, '').toUpperCase();
@@ -244,4 +301,3 @@ function mod97(numericString: string): number {
 	}
 	return remainder;
 }
-

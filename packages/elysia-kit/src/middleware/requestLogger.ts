@@ -1,10 +1,25 @@
 /**
- * @fileoverview FrankFMY Platform — Initiative Development
- * @author Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
+ * @fileoverview FrankFMY Platform — Initiative Development / Инициативная разработка
+ * @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
+ * @copyright 2025 Artyom Pryanishnikov
+ * @license PolyForm-Shield-1.0.0
+ *
+ * Middleware для логирования HTTP запросов и ответов
  */
 
 import { Elysia } from 'elysia';
 
+/**
+ * Middleware для логирования всех входящих HTTP запросов и ответов.
+ * Выводит в консоль:
+ * - Входящий запрос: метод и путь
+ * - Исходящий ответ: метод, путь, статус-код (с цветом) и время выполнения
+ *
+ * Использует цветную подсветку статус-кодов (зеленый для 2xx, желтый для 4xx, красный для 5xx).
+ * @example
+ * app.use(requestLogger);
+ * // Теперь все запросы будут логироваться в консоль
+ */
 export const requestLogger = new Elysia({ name: 'request-logger' })
 	.derive(() => ({
 		startTime: Date.now()

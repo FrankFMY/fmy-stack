@@ -53,11 +53,16 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
- * Debounce с возможностью немедленного первого вызова
- * @param fn Функция для debounce
- * @param delay Задержка в миллисекундах
- * @param immediate Если true, первый вызов выполняется немедленно
- * @returns Debounced функция
+ * Debounce функция с опцией немедленного первого вызова.
+ * Позволяет выполнить первый вызов сразу, а последующие откладывать.
+ * @param fn - Функция для debounce
+ * @param delay - Задержка в миллисекундах между вызовами
+ * @param immediate - Если `true`, первый вызов выполняется немедленно, последующие откладываются
+ * @returns Debounced функция, которая может вызвать `fn` немедленно при первом вызове
+ * @example
+ * const search = debounceImmediate((query) => api.search(query), 300, true);
+ * search('test'); // Выполнится немедленно
+ * search('test2'); // Будет отложен на 300мс
  */
 export function debounceImmediate<T extends (...args: unknown[]) => unknown>(
 	fn: T,
@@ -77,10 +82,14 @@ export function debounceImmediate<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
- * Throttle с trailing вызовом
- * @param fn Функция для throttle
- * @param limit Минимальный интервал между вызовами в миллисекундах
- * @returns Throttled функция с trailing
+ * Throttle функция с trailing вызовом.
+ * Гарантирует, что последний вызов будет выполнен после завершения периода throttle.
+ * @param fn - Функция для throttle
+ * @param limit - Минимальный интервал между вызовами в миллисекундах
+ * @returns Throttled функция, которая выполняет последний вызов после периода throttle
+ * @example
+ * const scrollHandler = throttleWithTrailing(() => saveScroll(), 100);
+ * // При быстрой прокрутке последняя позиция сохранится через 100мс после остановки
  */
 export function throttleWithTrailing<T extends (...args: unknown[]) => unknown>(
 	fn: T,
@@ -148,12 +157,23 @@ export function once<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
- * Noop - пустая функция
+ * Пустая функция, которая ничего не делает.
+ * Полезна в качестве значения по умолчанию для колбэков.
+ * @returns `undefined`
+ * @example
+ * const callback = onAction || noop;
+ * callback(); // Ничего не произойдет
  */
 export const noop = (): void => {};
 
 /**
- * Identity - возвращает аргумент как есть
+ * Функция тождественности - возвращает аргумент без изменений.
+ * Полезна для функционального программирования и композиции функций.
+ * @param value - Значение для возврата
+ * @returns То же самое значение
+ * @example
+ * const data = [1, 2, 3];
+ * const mapped = data.map(identity); // [1, 2, 3]
  */
 export const identity = <T>(value: T): T => value;
 
@@ -190,10 +210,16 @@ export function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Retry - повторить выполнение функции при ошибке
- * @param fn Асинхронная функция
- * @param maxRetries Максимальное количество попыток
- * @param delay Задержка между попытками в миллисекундах
+ * Повторить выполнение асинхронной функции при ошибке с экспоненциальной задержкой.
+ * Используется для обработки временных сбоев (сетевые ошибки, таймауты и т.д.).
+ * @param fn - Асинхронная функция для выполнения
+ * @param maxRetries - Максимальное количество попыток (по умолчанию 3)
+ * @param delay - Базовая задержка между попытками в миллисекундах (по умолчанию 1000)
+ * @returns Промис с результатом выполнения функции
+ * @throws Выбрасывает последнюю ошибку, если все попытки неудачны
+ * @example
+ * const data = await retry(() => fetchData(), 3, 1000);
+ * // Попытается выполнить fetchData до 3 раз с увеличивающейся задержкой
  */
 export async function retry<T>(
 	fn: () => Promise<T>,

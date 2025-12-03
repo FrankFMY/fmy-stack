@@ -42,23 +42,6 @@
 		}
 	},
 	"files": {
-		"includes": [
-			"packages/*/src/**/*.ts",
-			"packages/*/src/**/*.svelte",
-			"scripts/**/*.ts",
-			"examples/**/*.ts"
-		]
-	},
-	"overrides": [
-		{
-			"includes": ["*.svelte"],
-			"linter": {
-				"rules": {
-					"style": {
-						"useConst": "off"
-					}
-				}
-			}
-		}
-	]
+		"includes": ["packages/*/src/**/*.ts", "scripts/**/*.ts"]
+	}
 }

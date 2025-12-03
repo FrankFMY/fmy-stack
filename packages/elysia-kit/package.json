@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/elysia-kit",
-	"version": "1.0.1",
+	"version": "1.0.3",
 	"description": "ElysiaJS backend framework utilities: createApp, AuthPlugin, middleware, CRUD generation",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",
@@ -14,7 +14,11 @@
 			"import": "./dist/index.js"
 		}
 	},
-	"files": ["dist", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external && bun x tsc --emitDeclarationOnly --declaration --outDir dist",
 		"dev": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external --watch",
