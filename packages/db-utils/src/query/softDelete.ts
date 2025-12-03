@@ -3,7 +3,7 @@
  * @author Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
  */
 
-import { eq, isNull, and, type SQL, type Column } from 'drizzle-orm';
+import { eq, isNull, isNotNull, and, type SQL, type Column } from 'drizzle-orm';
 
 export interface SoftDeleteOptions {
 	deletedAtColumn: Column;
@@ -33,7 +33,7 @@ export function onlyDeleted(options: SoftDeleteOptions): SQL {
 		return eq(isDeletedColumn, true);
 	}
 
-	return isNull(deletedAtColumn);
+	return isNotNull(deletedAtColumn);
 }
 
 /**

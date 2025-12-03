@@ -335,57 +335,56 @@ function toDate(date: Date | string | number): Date {
 	return new Date(date);
 }
 
-function pluralizeMinutes(n: number): string {
+/**
+ * Склонение слов по числительным (внутренняя функция)
+ */
+function pluralizeInternal(n: number, forms: [string, string, string]): string {
 	const abs = Math.abs(n) % 100;
 	const n1 = abs % 10;
-	if (abs > 10 && abs < 20) return 'минут';
-	if (n1 > 1 && n1 < 5) return 'минуты';
-	if (n1 === 1) return 'минуту';
-	return 'минут';
+
+	if (abs > 10 && abs < 20) {
+		return forms[2];
+	}
+	if (n1 > 1 && n1 < 5) {
+		return forms[1];
+	}
+	if (n1 === 1) {
+		return forms[0];
+	}
+	return forms[2];
+}
+
+// Формы склонений для времени
+const TIME_FORMS = {
+	minutes: ['минуту', 'минуты', 'минут'] as [string, string, string],
+	hours: ['час', 'часа', 'часов'] as [string, string, string],
+	days: ['день', 'дня', 'дней'] as [string, string, string],
+	weeks: ['неделю', 'недели', 'недель'] as [string, string, string],
+	months: ['месяц', 'месяца', 'месяцев'] as [string, string, string],
+	years: ['год', 'года', 'лет'] as [string, string, string]
+} as const;
+
+function pluralizeMinutes(n: number): string {
+	return pluralizeInternal(n, TIME_FORMS.minutes);
 }
 
 function pluralizeHours(n: number): string {
-	const abs = Math.abs(n) % 100;
-	const n1 = abs % 10;
-	if (abs > 10 && abs < 20) return 'часов';
-	if (n1 > 1 && n1 < 5) return 'часа';
-	if (n1 === 1) return 'час';
-	return 'часов';
+	return pluralizeInternal(n, TIME_FORMS.hours);
 }
 
 function pluralizeDays(n: number): string {
-	const abs = Math.abs(n) % 100;
-	const n1 = abs % 10;
-	if (abs > 10 && abs < 20) return 'дней';
-	if (n1 > 1 && n1 < 5) return 'дня';
-	if (n1 === 1) return 'день';
-	return 'дней';
+	return pluralizeInternal(n, TIME_FORMS.days);
 }
 
 function pluralizeWeeks(n: number): string {
-	const abs = Math.abs(n) % 100;
-	const n1 = abs % 10;
-	if (abs > 10 && abs < 20) return 'недель';
-	if (n1 > 1 && n1 < 5) return 'недели';
-	if (n1 === 1) return 'неделю';
-	return 'недель';
+	return pluralizeInternal(n, TIME_FORMS.weeks);
 }
 
 function pluralizeMonths(n: number): string {
-	const abs = Math.abs(n) % 100;
-	const n1 = abs % 10;
-	if (abs > 10 && abs < 20) return 'месяцев';
-	if (n1 > 1 && n1 < 5) return 'месяца';
-	if (n1 === 1) return 'месяц';
-	return 'месяцев';
+	return pluralizeInternal(n, TIME_FORMS.months);
 }
 
 function pluralizeYears(n: number): string {
-	const abs = Math.abs(n) % 100;
-	const n1 = abs % 10;
-	if (abs > 10 && abs < 20) return 'лет';
-	if (n1 > 1 && n1 < 5) return 'года';
-	if (n1 === 1) return 'год';
-	return 'лет';
+	return pluralizeInternal(n, TIME_FORMS.years);
 }
 

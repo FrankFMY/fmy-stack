@@ -19,8 +19,11 @@
 		"build": "tsc",
 		"dev": "tsc --watch",
 		"clean": "rm -rf dist",
-		"lint": "echo 'No linter configured'",
+		"lint": "biome lint src/",
+		"lint:fix": "biome lint --write src/",
 		"check": "tsc --noEmit",
+		"test": "bun test",
+		"test:watch": "bun test --watch",
 		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
 		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
 	},

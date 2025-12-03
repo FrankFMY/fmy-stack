@@ -70,12 +70,13 @@ export async function hashSHA512(text: string): Promise<string> {
 
 /**
  * Хэшировать пароль с использованием Bun.password (bcrypt)
- * Эта функция работает только в среде Bun
+ * В среде Bun использует bcrypt, иначе SHA-256 с солью
  */
 export async function hashPassword(password: string): Promise<string> {
-	// Используем Bun.password для bcrypt хэширования
-	if (typeof Bun !== 'undefined' && Bun.password) {
-		return await Bun.password.hash(password, {
+	const bunPassword = getBunPassword();
+
+	if (bunPassword) {
+		return await bunPassword.hash(password, {
 			algorithm: 'bcrypt',
 			cost: 12
 		});
@@ -91,9 +92,10 @@ export async function hashPassword(password: string): Promise<string> {
  * Проверить пароль против хэша
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-	// Используем Bun.password для проверки bcrypt
-	if (typeof Bun !== 'undefined' && Bun.password) {
-		return await Bun.password.verify(password, hash);
+	const bunPassword = getBunPassword();
+
+	if (bunPassword) {
+		return await bunPassword.verify(password, hash);
 	}
 
 	// Fallback: проверка SHA-256 хэша
@@ -103,7 +105,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 		const salt = parts[2]!;
 		const storedHash = parts[3]!;
 		const computedHash = await hashSHA256(salt + password);
-		return storedHash === computedHash;
+		return secureCompare(storedHash, computedHash);
 	}
 
 	return false;
@@ -285,11 +287,20 @@ function shuffleString(str: string): string {
 	return arr.join('');
 }
 
-// Declare Bun types for TypeScript
-declare const Bun: {
-	password: {
-		hash(password: string, options?: { algorithm: string; cost: number }): Promise<string>;
-		verify(password: string, hash: string): Promise<boolean>;
-	};
-};
+/**
+ * Получить Bun.password API если доступен
+ */
+function getBunPassword(): BunPasswordAPI | null {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const global = globalThis as any;
+	if (typeof global.Bun?.password?.hash === 'function') {
+		return global.Bun.password as BunPasswordAPI;
+	}
+	return null;
+}
+
+interface BunPasswordAPI {
+	hash(password: string, options?: { algorithm: string; cost: number }): Promise<string>;
+	verify(password: string, hash: string): Promise<boolean>;
+}
 

@@ -22,7 +22,8 @@
 		"build": "svelte-package",
 		"dev": "svelte-package --watch",
 		"clean": "rm -rf dist",
-		"lint": "echo 'No linter configured'",
+		"lint": "biome lint src/",
+		"lint:fix": "biome lint --write src/",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
 		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"

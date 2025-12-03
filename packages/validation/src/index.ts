@@ -57,15 +57,10 @@ export const maxLengthString = (max: number) => type(`string <= ${max}`);
 
 /**
  * Строка с диапазоном длины
+ * Использует нативный синтаксис ArkType для intersection constraints
  */
-export function rangeLengthString(min: number, max: number) {
-	return type('string').narrow((value, ctx) => {
-		if (value.length < min || value.length > max) {
-			return ctx.mustBe(`от ${min} до ${max} символов`);
-		}
-		return true;
-	});
-}
+export const rangeLengthString = (min: number, max: number) =>
+	type(`string >= ${min}`).and(`string <= ${max}`);
 
 // ============================================================================
 // РОССИЙСКИЕ ИДЕНТИФИКАТОРЫ

@@ -297,39 +297,6 @@ export function zip<A, B>(arr1: A[], arr2: B[]): [A, B][] {
 }
 
 /**
- * Debounce функция
- */
-export function debounce<T extends (...args: unknown[]) => unknown>(
-	fn: T,
-	delay: number
-): (...args: Parameters<T>) => void {
-	let timeoutId: ReturnType<typeof setTimeout>;
-	return (...args: Parameters<T>) => {
-		clearTimeout(timeoutId);
-		timeoutId = setTimeout(() => fn(...args), delay);
-	};
-}
-
-/**
- * Throttle функция
- */
-export function throttle<T extends (...args: unknown[]) => unknown>(
-	fn: T,
-	limit: number
-): (...args: Parameters<T>) => void {
-	let inThrottle = false;
-	return (...args: Parameters<T>) => {
-		if (!inThrottle) {
-			fn(...args);
-			inThrottle = true;
-			setTimeout(() => {
-				inThrottle = false;
-			}, limit);
-		}
-	};
-}
-
-/**
  * Partition - разделить массив на два по условию
  */
 export function partition<T>(arr: T[], predicate: (item: T) => boolean): [T[], T[]] {

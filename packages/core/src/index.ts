@@ -167,8 +167,22 @@ export {
 	isNotEmpty,
 	compact,
 	zip,
-	debounce,
-	throttle,
 	partition
 } from './arrays/index.js';
+
+// === Functions ===
+export {
+	debounce,
+	debounceImmediate,
+	throttle,
+	throttleWithTrailing,
+	memoize,
+	once,
+	noop,
+	identity,
+	compose,
+	pipe,
+	sleep,
+	retry
+} from './functions/index.js';
 

@@ -18,10 +18,10 @@
 	"scripts": {
 		"build": "turbo run build",
 		"dev": "turbo run dev",
-		"lint": "turbo run lint",
-		"lint:fix": "turbo run lint:fix",
-		"format": "prettier --write \"**/*.{ts,tsx,svelte,js,json,md}\"",
-		"format:check": "prettier --check \"**/*.{ts,tsx,svelte,js,json,md}\"",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint --write .",
+		"format": "biome format --write .",
+		"format:check": "biome format .",
 		"check": "turbo run check",
 		"test": "turbo run test",
 		"clean": "turbo run clean && rm -rf node_modules",
@@ -30,11 +30,9 @@
 		"publish:npm": "bun run scripts/publish-all.ts npm"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "^2.3.8",
 		"@types/bun": "^1.3.3",
 		"@types/node": "^24.10.1",
-		"prettier": "^3.7.4",
-		"prettier-plugin-svelte": "^3.4.0",
-		"prettier-plugin-tailwindcss": "^0.7.2",
 		"turbo": "^2.6.1",
 		"typescript": "^5.9.3"
 	},
