@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/validation",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "ArkType схемы валидации: Email, PhoneRU, INN, OGRN, СНИЛС, Password, UserCreate",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",
@@ -26,7 +26,7 @@
 	},
 	"dependencies": {
 		"arktype": "^2.1.28",
-		"@frankfmy/core": "workspace:*"
+		"@frankfmy/core": "^1.0.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"

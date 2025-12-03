@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/elysia-kit",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "ElysiaJS backend framework utilities: createApp, AuthPlugin, middleware, CRUD generation",
 	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
 	"license": "PolyForm-Shield-1.0.0",
@@ -29,8 +29,8 @@
 		"@elysiajs/jwt": "^1.3.0",
 		"@elysiajs/cors": "^1.3.0",
 		"@elysiajs/swagger": "^1.3.0",
-		"@frankfmy/core": "workspace:^",
-		"@frankfmy/validation": "workspace:^",
+		"@frankfmy/core": "^1.0.0",
+		"@frankfmy/validation": "^1.0.1",
 		"jose": "^6.1.3"
 	},
 	"devDependencies": {
