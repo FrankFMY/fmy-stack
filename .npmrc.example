@@ -1,0 +1,18 @@
+# FMY-Stack NPM Configuration Example
+# ====================================
+#
+# Copy this file to .npmrc and configure:
+#
+# 1. Create GitHub Personal Access Token:
+#    - Go to: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+#    - Generate new token with scopes: write:packages, read:packages
+#
+# 2. Set token in your environment:
+#    echo 'export NPM_TOKEN="ghp_YOUR_TOKEN"' >> ~/.bashrc
+#    source ~/.bashrc
+#
+# 3. For CI/CD, add NPM_TOKEN as a secret
+
+@frankfmy:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+

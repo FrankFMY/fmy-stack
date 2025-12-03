@@ -52,7 +52,9 @@
 		"dev": "tsc --watch",
 		"clean": "rm -rf dist",
 		"lint": "echo 'No linter configured'",
-		"check": "tsc --noEmit"
+		"check": "tsc --noEmit",
+		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
+		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
@@ -72,6 +74,14 @@
 		"validation",
 		"russia",
 		"russian"
-	]
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FrankFMY/fmy-stack.git",
+		"directory": "packages/core"
+	},
+	"bugs": {
+		"url": "https://github.com/FrankFMY/fmy-stack/issues"
+	},
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/core#readme"
 }
-

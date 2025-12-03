@@ -23,7 +23,9 @@
 		"dev": "svelte-package --watch",
 		"clean": "rm -rf dist",
 		"lint": "echo 'No linter configured'",
-		"check": "svelte-check --tsconfig ./tsconfig.json"
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
+		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
@@ -52,6 +54,14 @@
 		"toast",
 		"modal",
 		"theme"
-	]
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FrankFMY/fmy-stack.git",
+		"directory": "packages/ui"
+	},
+	"bugs": {
+		"url": "https://github.com/FrankFMY/fmy-stack/issues"
+	},
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/ui#readme"
 }
-

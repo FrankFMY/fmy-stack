@@ -20,7 +20,9 @@
 		"dev": "tsc --watch",
 		"clean": "rm -rf dist",
 		"lint": "echo 'No linter configured'",
-		"check": "tsc --noEmit"
+		"check": "tsc --noEmit",
+		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
+		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
 	},
 	"dependencies": {
 		"arktype": "^2.1.28",
@@ -39,6 +41,14 @@
 		"ogrn",
 		"phone",
 		"email"
-	]
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FrankFMY/fmy-stack.git",
+		"directory": "packages/validation"
+	},
+	"bugs": {
+		"url": "https://github.com/FrankFMY/fmy-stack/issues"
+	},
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/validation#readme"
 }
-

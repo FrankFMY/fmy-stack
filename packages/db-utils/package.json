@@ -20,7 +20,9 @@
 		"dev": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external --watch",
 		"clean": "rm -rf dist",
 		"lint": "echo 'No linter configured'",
-		"test": "bun test"
+		"test": "bun test",
+		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
+		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
 	},
 	"dependencies": {
 		"drizzle-orm": "^0.44.2",
@@ -44,6 +46,14 @@
 		"pagination",
 		"search",
 		"soft-delete"
-	]
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FrankFMY/fmy-stack.git",
+		"directory": "packages/db-utils"
+	},
+	"bugs": {
+		"url": "https://github.com/FrankFMY/fmy-stack/issues"
+	},
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/db-utils#readme"
 }
-
