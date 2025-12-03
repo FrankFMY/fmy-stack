@@ -22,8 +22,7 @@
 		"lint": "biome lint src/",
 		"lint:fix": "biome lint --write src/",
 		"check": "tsc --noEmit",
-		"test": "bun test",
-		"test:watch": "bun test --watch",
+		"test": "echo 'No tests yet'",
 		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
 		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
 	},
