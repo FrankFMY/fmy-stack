@@ -25,4 +25,3 @@ export { respond, type ApiResponse } from './utils/response.js';
 
 // Types
 export type { Context, ElysiaApp } from './types.js';
-

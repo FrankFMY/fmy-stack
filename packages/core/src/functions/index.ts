@@ -122,9 +122,7 @@ export function throttleWithTrailing<T extends (...args: unknown[]) => unknown>(
  * @example
  * const memoizedFib = memoize((n) => n <= 1 ? n : memoizedFib(n - 1) + memoizedFib(n - 2));
  */
-export function memoize<T extends (...args: unknown[]) => unknown>(
-	fn: T
-): T {
+export function memoize<T extends (...args: unknown[]) => unknown>(fn: T): T {
 	const cache = new Map<string, ReturnType<T>>();
 	return ((...args: Parameters<T>) => {
 		const key = JSON.stringify(args);
@@ -241,4 +239,3 @@ export async function retry<T>(
 
 	throw lastError;
 }
-

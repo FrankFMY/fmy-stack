@@ -24,6 +24,7 @@
 		"format:check": "biome format .",
 		"check": "turbo run check",
 		"test": "turbo run test",
+		"full": "biome check --write . && turbo run check && turbo run build",
 		"clean": "turbo run clean && rm -rf node_modules",
 		"copyright:add": "bun run scripts/add-copyright.ts",
 		"publish:github": "bun run scripts/publish-all.ts github",

@@ -56,17 +56,14 @@ export function rateLimiter(config: RateLimitConfig = {}) {
 	const store = new Map<string, RateLimitEntry>();
 
 	// Cleanup old entries periodically
-	setInterval(
-		() => {
-			const now = Date.now();
-			for (const [key, entry] of store.entries()) {
-				if (entry.resetTime < now) {
-					store.delete(key);
-				}
+	setInterval(() => {
+		const now = Date.now();
+		for (const [key, entry] of store.entries()) {
+			if (entry.resetTime < now) {
+				store.delete(key);
 			}
-		},
-		finalConfig.windowMs * 2
-	);
+		}
+	}, finalConfig.windowMs * 2);
 
 	return new Elysia({ name: 'rate-limiter' }).onRequest(({ request, set }) => {
 		const key = finalConfig.keyGenerator(request);
@@ -85,9 +82,7 @@ export function rateLimiter(config: RateLimitConfig = {}) {
 
 		// Set rate limit headers
 		set.headers['X-RateLimit-Limit'] = String(finalConfig.max);
-		set.headers['X-RateLimit-Remaining'] = String(
-			Math.max(0, finalConfig.max - entry.count)
-		);
+		set.headers['X-RateLimit-Remaining'] = String(Math.max(0, finalConfig.max - entry.count));
 		set.headers['X-RateLimit-Reset'] = String(Math.ceil(entry.resetTime / 1000));
 
 		if (entry.count > finalConfig.max) {
@@ -95,4 +90,3 @@ export function rateLimiter(config: RateLimitConfig = {}) {
 		}
 	});
 }
-

@@ -27,12 +27,10 @@ import type { AuthUser } from '../types.js';
  *   .get('/settings', ({ user }) => ({ settings: user }))
  * );
  */
-export const jwtMiddleware = new Elysia({ name: 'jwt-middleware' }).derive(
-	(ctx) => {
-		const user = (ctx as unknown as { user: AuthUser | null }).user;
-		if (!user) {
-			throw new ApiError(HttpStatus.UNAUTHORIZED, 'Authentication required');
-		}
-		return { user };
+export const jwtMiddleware = new Elysia({ name: 'jwt-middleware' }).derive((ctx) => {
+	const user = (ctx as unknown as { user: AuthUser | null }).user;
+	if (!user) {
+		throw new ApiError(HttpStatus.UNAUTHORIZED, 'Authentication required');
 	}
-);
+	return { user };
+});

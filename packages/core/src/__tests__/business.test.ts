@@ -159,4 +159,3 @@ describe('generateINN12', () => {
 		}
 	});
 });
-

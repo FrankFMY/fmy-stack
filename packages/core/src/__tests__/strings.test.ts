@@ -133,9 +133,7 @@ describe('highlightText', () => {
 	});
 
 	test('should use custom tag', () => {
-		expect(highlightText('Hello World', 'world', 'strong')).toBe(
-			'Hello <strong>World</strong>'
-		);
+		expect(highlightText('Hello World', 'world', 'strong')).toBe('Hello <strong>World</strong>');
 	});
 
 	test('should handle empty query', () => {
@@ -241,4 +239,3 @@ describe('transliterate', () => {
 		expect(transliterate('Hello Мир')).toBe('Hello Mir');
 	});
 });
-

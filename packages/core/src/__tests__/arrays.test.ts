@@ -307,4 +307,3 @@ describe('partition', () => {
 		expect(odds).toEqual([1, 3, 5]);
 	});
 });
-

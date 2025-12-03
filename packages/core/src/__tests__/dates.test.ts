@@ -260,4 +260,3 @@ describe('isValidDate', () => {
 		expect(isValidDate('not a date' as unknown as Date)).toBe(false);
 	});
 });
-

@@ -523,4 +523,3 @@ function pluralizeMonths(n: number): string {
 function pluralizeYears(n: number): string {
 	return pluralizeInternal(n, TIME_FORMS.years);
 }
-

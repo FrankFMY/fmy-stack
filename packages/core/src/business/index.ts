@@ -415,4 +415,3 @@ export function validateAccount(account: string, bik: string): boolean {
 
 	return sum % 10 === 0;
 }
-

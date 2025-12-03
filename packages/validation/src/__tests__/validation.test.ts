@@ -310,4 +310,3 @@ describe('validateOrThrow utility', () => {
 		expect(() => validateOrThrow(EmailSchema, 'invalid')).toThrow();
 	});
 });
-
