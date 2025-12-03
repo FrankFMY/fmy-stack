@@ -4,7 +4,12 @@
 
 import { describe, expect, test } from 'bun:test';
 import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { getRestoreValues, getSoftDeleteValues, onlyDeleted, withSoftDelete } from '../query/softDelete.js';
+import {
+	getRestoreValues,
+	getSoftDeleteValues,
+	onlyDeleted,
+	withSoftDelete
+} from '../query/softDelete.js';
 
 const testTable = pgTable('test', {
 	id: uuid('id').primaryKey(),

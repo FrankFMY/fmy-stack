@@ -587,9 +587,7 @@ export const v = validationScope.export();
 export function validate<T>(
 	schema: (data: unknown) => T | type.errors,
 	data: unknown
-):
-	| { success: true; data: T; errors?: never }
-	| { success: false; data?: never; errors: string[] } {
+): { success: true; data: T; errors?: never } | { success: false; data?: never; errors: string[] } {
 	const result = schema(data);
 
 	if (result instanceof type.errors) {
@@ -621,10 +619,7 @@ export function validate<T>(
  *   console.log('Validation failed:', error.message);
  * }
  */
-export function validateOrThrow<T>(
-	schema: (data: unknown) => T | type.errors,
-	data: unknown
-): T {
+export function validateOrThrow<T>(schema: (data: unknown) => T | type.errors, data: unknown): T {
 	const result = schema(data);
 
 	if (result instanceof type.errors) {
