@@ -1,0 +1,44 @@
+{
+	"name": "@frankfmy/validation",
+	"version": "1.0.0",
+	"description": "ArkType схемы валидации: Email, PhoneRU, INN, OGRN, СНИЛС, Password, UserCreate",
+	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
+	"license": "PolyForm-Shield-1.0.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": ["dist", "README.md", "LICENSE"],
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"lint": "echo 'No linter configured'",
+		"check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"arktype": "^2.1.28",
+		"@frankfmy/core": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	},
+	"keywords": [
+		"validation",
+		"arktype",
+		"schemas",
+		"typescript",
+		"russian",
+		"inn",
+		"ogrn",
+		"phone",
+		"email"
+	]
+}
+

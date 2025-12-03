@@ -1,0 +1,49 @@
+{
+	"name": "@frankfmy/db-utils",
+	"version": "1.0.0",
+	"description": "Drizzle ORM helpers: BaseEntity, pagination, search, soft delete, transactions, bulk operations",
+	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
+	"license": "PolyForm-Shield-1.0.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": ["dist", "README.md", "LICENSE"],
+	"scripts": {
+		"build": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external && bun x tsc --emitDeclarationOnly --declaration --outDir dist",
+		"dev": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external --watch",
+		"clean": "rm -rf dist",
+		"lint": "echo 'No linter configured'",
+		"test": "bun test"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.44.2",
+		"@frankfmy/core": "workspace:^"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3",
+		"bun-types": "^1.2.19"
+	},
+	"peerDependencies": {
+		"drizzle-orm": ">=0.30.0"
+	},
+	"keywords": [
+		"drizzle",
+		"drizzle-orm",
+		"orm",
+		"database",
+		"postgres",
+		"sqlite",
+		"mysql",
+		"pagination",
+		"search",
+		"soft-delete"
+	]
+}
+

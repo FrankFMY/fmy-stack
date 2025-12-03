@@ -1,0 +1,77 @@
+{
+	"name": "@frankfmy/core",
+	"version": "1.0.0",
+	"description": "Фундаментальные TypeScript утилиты: даты, деньги, строки, телефоны, валидация ИНН/ОГРН, хэширование",
+	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
+	"license": "PolyForm-Shield-1.0.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./dates": {
+			"types": "./dist/dates/index.d.ts",
+			"import": "./dist/dates/index.js"
+		},
+		"./money": {
+			"types": "./dist/money/index.d.ts",
+			"import": "./dist/money/index.js"
+		},
+		"./strings": {
+			"types": "./dist/strings/index.d.ts",
+			"import": "./dist/strings/index.js"
+		},
+		"./phone": {
+			"types": "./dist/phone/index.d.ts",
+			"import": "./dist/phone/index.js"
+		},
+		"./business": {
+			"types": "./dist/business/index.d.ts",
+			"import": "./dist/business/index.js"
+		},
+		"./crypto": {
+			"types": "./dist/crypto/index.d.ts",
+			"import": "./dist/crypto/index.js"
+		},
+		"./arrays": {
+			"types": "./dist/arrays/index.d.ts",
+			"import": "./dist/arrays/index.js"
+		},
+		"./types": {
+			"types": "./dist/types/index.d.ts",
+			"import": "./dist/types/index.js"
+		}
+	},
+	"files": ["dist", "README.md", "LICENSE"],
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"lint": "echo 'No linter configured'",
+		"check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"nanoid": "^5.1.5"
+	},
+	"keywords": [
+		"utils",
+		"utilities",
+		"typescript",
+		"dates",
+		"money",
+		"phone",
+		"inn",
+		"ogrn",
+		"validation",
+		"russia",
+		"russian"
+	]
+}
+

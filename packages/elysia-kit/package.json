@@ -1,0 +1,53 @@
+{
+	"name": "@frankfmy/elysia-kit",
+	"version": "1.0.0",
+	"description": "ElysiaJS backend framework utilities: createApp, AuthPlugin, middleware, CRUD generation",
+	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
+	"license": "PolyForm-Shield-1.0.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": ["dist", "README.md", "LICENSE"],
+	"scripts": {
+		"build": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external && bun x tsc --emitDeclarationOnly --declaration --outDir dist",
+		"dev": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external --watch",
+		"clean": "rm -rf dist",
+		"lint": "echo 'No linter configured'",
+		"test": "bun test"
+	},
+	"dependencies": {
+		"elysia": "^1.3.2",
+		"@elysiajs/jwt": "^1.3.0",
+		"@elysiajs/cors": "^1.3.0",
+		"@elysiajs/swagger": "^1.3.0",
+		"@frankfmy/core": "workspace:^",
+		"@frankfmy/validation": "workspace:^",
+		"jose": "^6.1.3"
+	},
+	"devDependencies": {
+		"typescript": "^5.9.3",
+		"bun-types": "^1.2.19"
+	},
+	"peerDependencies": {
+		"elysia": "^1.0.0"
+	},
+	"keywords": [
+		"elysia",
+		"elysiajs",
+		"backend",
+		"framework",
+		"api",
+		"rest",
+		"jwt",
+		"auth",
+		"middleware"
+	]
+}
+

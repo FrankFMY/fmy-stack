@@ -1,0 +1,57 @@
+{
+	"name": "@frankfmy/ui",
+	"version": "1.0.0",
+	"description": "Svelte 5 UI компоненты с TailwindCSS v4: Button, Input, DataTable, Toast, Modal, Theme",
+	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
+	"license": "PolyForm-Shield-1.0.0",
+	"type": "module",
+	"svelte": "./dist/index.js",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js",
+			"import": "./dist/index.js"
+		},
+		"./styles.css": "./dist/styles.css"
+	},
+	"files": ["dist", "README.md", "LICENSE"],
+	"scripts": {
+		"build": "svelte-package",
+		"dev": "svelte-package --watch",
+		"clean": "rm -rf dist",
+		"lint": "echo 'No linter configured'",
+		"check": "svelte-check --tsconfig ./tsconfig.json"
+	},
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1"
+	},
+	"devDependencies": {
+		"@sveltejs/package": "^2.3.11",
+		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"svelte": "^5.33.0",
+		"svelte-check": "^4.2.1",
+		"tailwindcss": "^4.1.10",
+		"typescript": "^5.9.3",
+		"vite": "^6.3.5"
+	},
+	"keywords": [
+		"svelte",
+		"svelte5",
+		"ui",
+		"components",
+		"tailwindcss",
+		"button",
+		"input",
+		"datatable",
+		"toast",
+		"modal",
+		"theme"
+	]
+}
+
