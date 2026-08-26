@@ -1,44 +1,25 @@
 /**
- * @fileoverview FrankFMY Platform — Copyright Header Script
- * @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
- * @copyright 2025 Artyom Pryanishnikov
- * @license PolyForm-Shield-1.0.0
+ * Add canonical Apache-2.0 copyright headers to package source files.
  *
- * Adds copyright headers to source files in the monorepo
- * Usage: bun run scripts/add-copyright.ts
+ * Copyright 2026 Artem Prianishnikov
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 
-const COPYRIGHT_TS = `/**
- * @fileoverview FrankFMY Platform — Initiative Development / Инициативная разработка
- * @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
- * @copyright 2025 Artyom Pryanishnikov
- * @license PolyForm-Shield-1.0.0
- *
- * INITIATIVE DEVELOPMENT: Created independently, without TZ or direct order.
- * IP rights remain with the Author. Commercial use requires agreement.
- * Contact: Pryanishnikovartem@gmail.com
+const TYPESCRIPT_HEADER = `/**
+ * Copyright 2026 Artem Prianishnikov
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 `;
-
-const COPYRIGHT_SVELTE = `<!--
-  FrankFMY Platform — Initiative Development / Инициативная разработка
-  @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
-  @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
--->
+const SVELTE_HEADER = `<!-- Copyright 2026 Artem Prianishnikov | SPDX-License-Identifier: Apache-2.0 -->
 `;
-
-const COPYRIGHT_CSS = `/**
- * FrankFMY Platform — Initiative Development
- * @author Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
- */
+const STYLE_HEADER = `/** Copyright 2026 Artem Prianishnikov | SPDX-License-Identifier: Apache-2.0 */
 
 `;
-
-const IGNORE_DIRS = new Set([
+const ignoredDirectories = new Set([
 	'node_modules',
 	'dist',
 	'.svelte-kit',
@@ -47,17 +28,14 @@ const IGNORE_DIRS = new Set([
 	'coverage',
 	'build'
 ]);
-
-const IGNORE_FILES = new Set([
+const ignoredFiles = new Set([
 	'package.json',
 	'tsconfig.json',
 	'turbo.json',
-	'.prettierrc',
 	'.gitignore',
-	'bun.lockb'
+	'bun.lock'
 ]);
-
-const COPYRIGHT_MARKER = 'FrankFMY Platform';
+const marker = 'SPDX-License-Identifier: Apache-2.0';
 
 interface Stats {
 	processed: number;
@@ -65,110 +43,50 @@ interface Stats {
 	added: number;
 }
 
-async function addCopyrightToFile(filePath: string, stats: Stats): Promise<void> {
-	const ext = extname(filePath);
-	let copyright: string;
+const headerFor = (path: string): string | null => {
+	const extension = extname(path);
+	if (['.ts', '.tsx', '.js', '.jsx'].includes(extension)) return TYPESCRIPT_HEADER;
+	if (extension === '.svelte') return SVELTE_HEADER;
+	if (['.css', '.scss'].includes(extension)) return STYLE_HEADER;
+	return null;
+};
 
-	switch (ext) {
-		case '.ts':
-		case '.tsx':
-		case '.js':
-		case '.jsx':
-			copyright = COPYRIGHT_TS;
-			break;
-		case '.svelte':
-			copyright = COPYRIGHT_SVELTE;
-			break;
-		case '.css':
-		case '.scss':
-			copyright = COPYRIGHT_CSS;
-			break;
-		default:
-			stats.skipped++;
-			return;
+async function processFile(path: string, stats: Stats): Promise<void> {
+	const header = headerFor(path);
+	if (!header) {
+		stats.skipped += 1;
+		return;
 	}
+	const content = await readFile(path, 'utf8');
+	stats.processed += 1;
+	if (content.includes(marker)) {
+		stats.skipped += 1;
+		return;
+	}
+	await writeFile(path, header + content, 'utf8');
+	stats.added += 1;
+}
 
-	try {
-		let content = await readFile(filePath, 'utf8');
-		stats.processed++;
-
-		// Check if already has copyright
-		if (content.includes(COPYRIGHT_MARKER)) {
-			stats.skipped++;
-			return;
-		}
-
-		// Handle files that start with shebang
-		if (content.startsWith('#!')) {
-			const firstNewline = content.indexOf('\n');
-			const shebang = content.slice(0, firstNewline + 1);
-			content = shebang + copyright + content.slice(firstNewline + 1);
-		} else {
-			content = copyright + content;
-		}
-
-		await writeFile(filePath, content, 'utf8');
-		stats.added++;
-		console.log(`✅ Added copyright: ${filePath}`);
-	} catch (error) {
-		console.error(`❌ Error processing ${filePath}:`, error);
+async function walk(directory: string, stats: Stats): Promise<void> {
+	for (const entry of await readdir(directory, { withFileTypes: true })) {
+		if (ignoredDirectories.has(entry.name)) continue;
+		const path = join(directory, entry.name);
+		if (entry.isDirectory()) await walk(path, stats);
+		else if (entry.isFile() && !ignoredFiles.has(entry.name)) await processFile(path, stats);
 	}
 }
 
-async function traverseDirectory(directory: string, stats: Stats): Promise<void> {
-	const entries = await readdir(directory, { withFileTypes: true });
-
-	for (const entry of entries) {
-		const fullPath = join(directory, entry.name);
-
-		if (IGNORE_DIRS.has(entry.name)) {
-			continue;
-		}
-
-		if (entry.isDirectory()) {
-			await traverseDirectory(fullPath, stats);
-		} else if (entry.isFile() && !IGNORE_FILES.has(entry.name)) {
-			await addCopyrightToFile(fullPath, stats);
-		}
-	}
-}
-
-async function main() {
-	console.log('🔧 FrankFMY Copyright Script');
-	console.log('============================\n');
-
+async function main(): Promise<void> {
 	const stats: Stats = { processed: 0, skipped: 0, added: 0 };
-	const packagesDir = join(process.cwd(), 'packages');
-
-	try {
-		const packages = await readdir(packagesDir);
-
-		for (const pkg of packages) {
-			const pkgPath = join(packagesDir, pkg);
-			const pkgStat = await stat(pkgPath);
-
-			if (pkgStat.isDirectory()) {
-				const srcPath = join(pkgPath, 'src');
-				try {
-					await stat(srcPath);
-					console.log(`📦 Processing: ${pkg}`);
-					await traverseDirectory(srcPath, stats);
-				} catch {
-					// No src directory, skip
-				}
-			}
+	for (const packageName of await readdir(join(process.cwd(), 'packages'))) {
+		const source = join(process.cwd(), 'packages', packageName, 'src');
+		try {
+			if ((await stat(source)).isDirectory()) await walk(source, stats);
+		} catch {
+			/* package has no source directory */
 		}
-
-		console.log('\n============================');
-		console.log(`📊 Results:`);
-		console.log(`   Processed: ${stats.processed}`);
-		console.log(`   Added: ${stats.added}`);
-		console.log(`   Skipped: ${stats.skipped}`);
-		console.log('============================\n');
-	} catch (error) {
-		console.error('Failed to process packages:', error);
-		process.exit(1);
 	}
+	console.log(JSON.stringify(stats));
 }
 
-main();
+await main();

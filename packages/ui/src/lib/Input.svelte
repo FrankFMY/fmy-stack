@@ -1,7 +1,7 @@
 <!--
-  FrankFMY Platform — Initiative Development / Инициативная разработка
-  @author Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>
-  @copyright 2025 Artyom Pryanishnikov | @license PolyForm-Shield-1.0.0
+  FMY Stack
+  @author Artem Prianishnikov <Pryanishnikovartem@gmail.com>
+  @copyright 2026 Artem Prianishnikov | @license Apache-2.0
 -->
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';

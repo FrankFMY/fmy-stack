@@ -1,9 +1,13 @@
 {
 	"name": "@frankfmy/core",
 	"version": "1.1.1",
-	"description": "Фундаментальные TypeScript утилиты: даты, деньги, строки, телефоны, валидация ИНН/ОГРН, хэширование",
-	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
-	"license": "PolyForm-Shield-1.0.0",
+	"description": "TypeScript utilities for dates, money, strings, phones, identifiers, collections, functions and cryptography.",
+	"author": {
+		"name": "Artem Prianishnikov",
+		"email": "Pryanishnikovartem@gmail.com",
+		"url": "https://frankfmy.com"
+	},
+	"license": "Apache-2.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -63,9 +67,7 @@
 		"lint:fix": "biome lint --write src/",
 		"check": "tsc --noEmit",
 		"test": "bun test",
-		"test:watch": "bun test --watch",
-		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
-		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
+		"test:watch": "bun test --watch"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
@@ -94,5 +96,6 @@
 	"bugs": {
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
-	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/core#readme"
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/core#readme",
+	"private": true
 }

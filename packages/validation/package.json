@@ -1,9 +1,13 @@
 {
 	"name": "@frankfmy/validation",
 	"version": "1.1.1",
-	"description": "ArkType схемы валидации: Email, PhoneRU, INN, OGRN, СНИЛС, Password, UserCreate",
-	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
-	"license": "PolyForm-Shield-1.0.0",
+	"description": "ArkType schemas for common identity, account, pagination, money and validation contracts.",
+	"author": {
+		"name": "Artem Prianishnikov",
+		"email": "Pryanishnikovartem@gmail.com",
+		"url": "https://frankfmy.com"
+	},
+	"license": "Apache-2.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
@@ -27,9 +31,7 @@
 		"lint:fix": "biome lint --write src/",
 		"check": "tsc --noEmit",
 		"test": "bun test",
-		"test:watch": "bun test --watch",
-		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
-		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
+		"test:watch": "bun test --watch"
 	},
 	"dependencies": {
 		"arktype": "^2.1.28",
@@ -57,5 +59,6 @@
 	"bugs": {
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
-	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/validation#readme"
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/validation#readme",
+	"private": true
 }

@@ -157,5 +157,5 @@ const CompanyData = type({
 
 ## License
 
-PolyForm Shield 1.0.0 — © 2025 Artyom Pryanishnikov
+Apache-2.0 © 2026 Artem Prianishnikov
 

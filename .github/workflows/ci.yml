@@ -2,53 +2,25 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  lint-and-format:
-    name: Lint & Format
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.3
+          bun-version: 1.4.0
       - run: bun install --frozen-lockfile
-      - run: bun run lint
       - run: bun run format:check
-
-  type-check:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.3
-      - run: bun install --frozen-lockfile
+      - run: bun run lint
       - run: bun run check
-
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.3
-      - run: bun install --frozen-lockfile
       - run: bun run test
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs: [lint-and-format, type-check, test]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.3
-      - run: bun install --frozen-lockfile
       - run: bun run build
+      - run: bun audit

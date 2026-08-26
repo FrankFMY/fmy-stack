@@ -1,9 +1,13 @@
 {
 	"name": "@frankfmy/ui",
 	"version": "1.1.1",
-	"description": "Svelte 5 UI компоненты с TailwindCSS v4: Button, Input, DataTable, Toast, Modal, Theme",
-	"author": "Artyom Pryanishnikov <Pryanishnikovartem@gmail.com>",
-	"license": "PolyForm-Shield-1.0.0",
+	"description": "Svelte 5 and Tailwind CSS components for forms, tables, overlays, feedback and themes.",
+	"author": {
+		"name": "Artem Prianishnikov",
+		"email": "Pryanishnikovartem@gmail.com",
+		"url": "https://frankfmy.com"
+	},
+	"license": "Apache-2.0",
 	"type": "module",
 	"svelte": "./dist/index.js",
 	"main": "./dist/index.js",
@@ -28,25 +32,23 @@
 		"clean": "rm -rf dist",
 		"lint": "biome lint src/",
 		"lint:fix": "biome lint --write src/",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
-		"publish:github": "npm publish --registry=https://npm.pkg.github.com",
-		"publish:npm": "npm publish --registry=https://registry.npmjs.org --access=public"
+		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
-		"tailwind-merge": "^3.4.0"
+		"tailwind-merge": "^3.6.0"
 	},
 	"devDependencies": {
-		"@sveltejs/package": "^2.3.11",
-		"@sveltejs/vite-plugin-svelte": "^5.0.3",
-		"svelte": "^5.33.0",
-		"svelte-check": "^4.2.1",
-		"tailwindcss": "^4.1.10",
-		"typescript": "^5.9.3",
-		"vite": "^6.3.5"
+		"@sveltejs/package": "^2.5.8",
+		"@sveltejs/vite-plugin-svelte": "^7.3.0",
+		"svelte": "^5.56.10",
+		"svelte-check": "^4.7.6",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^6.0.3",
+		"vite": "^8.2.2"
 	},
 	"keywords": [
 		"svelte",
@@ -69,5 +71,6 @@
 	"bugs": {
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
-	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/ui#readme"
+	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/ui#readme",
+	"private": true
 }
