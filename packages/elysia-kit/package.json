@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/elysia-kit",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Elysia helpers for application setup, authentication, middleware, errors, rate limits and responses.",
 	"author": {
 		"name": "Artem Prianishnikov",
@@ -21,32 +21,32 @@
 	"files": [
 		"dist",
 		"README.md",
-		"LICENSE"
+		"LICENSE",
+		"NOTICE"
 	],
 	"scripts": {
-		"build": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external && bun x tsc --emitDeclarationOnly --declaration --outDir dist",
+		"build": "rm -rf dist && bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external --packages external && bun x tsc -p tsconfig.build.json",
 		"dev": "bun build ./src/index.ts --outdir=./dist --target=bun --format=esm --sourcemap=external --watch",
 		"clean": "rm -rf dist",
 		"lint": "biome lint src/",
 		"lint:fix": "biome lint --write src/",
 		"check": "tsc --noEmit",
-		"test": "bun test"
+		"test": "bun test",
+		"package:check": "node scripts/verify-package-contract.mjs"
 	},
 	"dependencies": {
-		"elysia": "^1.4.29",
 		"@elysiajs/jwt": "^1.4.2",
 		"@elysiajs/cors": "^1.4.2",
 		"@elysiajs/swagger": "^1.3.1",
-		"@frankfmy/core": "latest",
-		"@frankfmy/validation": "latest",
 		"jose": "^6.2.10"
 	},
 	"devDependencies": {
+		"elysia": "^1.4.29",
 		"typescript": "^6.0.3",
 		"bun-types": "^1.4.0"
 	},
 	"peerDependencies": {
-		"elysia": "^1.0.0"
+		"elysia": ">=1.4.29 <2"
 	},
 	"keywords": [
 		"elysia",
@@ -68,5 +68,7 @@
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
 	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/elysia-kit#readme",
-	"private": true
+	"publishConfig": {
+		"access": "public"
+	}
 }

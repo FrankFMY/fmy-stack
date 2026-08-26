@@ -30,11 +30,12 @@
 		"format:check": "biome format .",
 		"check": "turbo run check",
 		"test": "turbo run test",
+		"packages:check": "node scripts/verify-npm-packages.mjs",
 		"full": "biome check --write . && turbo run check && turbo run build",
 		"clean": "turbo run clean && rm -rf node_modules",
 		"copyright:add": "bun run scripts/add-copyright.ts",
 		"audit": "bun audit",
-		"verify": "bun run format:check && bun run lint && bun run check && bun run test && bun run build && bun audit"
+		"verify": "bun run format:check && bun run lint && bun run check && bun run test && bun run build && bun run packages:check && bun audit"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.10",

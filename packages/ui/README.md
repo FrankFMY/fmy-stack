@@ -8,6 +8,15 @@
 bun add @frankfmy/ui
 ```
 
+Register the packaged components with Tailwind CSS v4 in your application stylesheet:
+
+```css
+@import "tailwindcss";
+@import "@frankfmy/ui/styles.css";
+```
+
+The package stylesheet only registers component source files for Tailwind scanning; it does not install a global reset or theme.
+
 ## Components
 
 ### Button

@@ -124,6 +124,7 @@ export {
 	hashSHA512,
 	hashPassword,
 	verifyPassword,
+	passwordHashNeedsRehash,
 	generateOTP,
 	generateApiKey,
 	generateRandomPassword,

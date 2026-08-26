@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/ui",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Svelte 5 and Tailwind CSS components for forms, tables, overlays, feedback and themes.",
 	"author": {
 		"name": "Artem Prianishnikov",
@@ -24,15 +24,17 @@
 	"files": [
 		"dist",
 		"README.md",
-		"LICENSE"
+		"LICENSE",
+		"NOTICE"
 	],
 	"scripts": {
-		"build": "svelte-package",
+		"build": "rm -rf dist && svelte-package",
 		"dev": "svelte-package --watch",
 		"clean": "rm -rf dist",
 		"lint": "biome lint src/",
 		"lint:fix": "biome lint --write src/",
-		"check": "svelte-check --tsconfig ./tsconfig.json"
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"package:check": "node scripts/verify-package-contract.mjs"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
@@ -72,5 +74,7 @@
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
 	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/ui#readme",
-	"private": true
+	"publishConfig": {
+		"access": "public"
+	}
 }

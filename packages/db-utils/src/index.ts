@@ -26,9 +26,20 @@ export {
 	type PaginatedResult
 } from './query/paginate.js';
 
-export { buildSearchFilter, type SearchConfig } from './query/search.js';
+export {
+	buildFullTextSearch,
+	buildSearchFilter,
+	buildTrigramSearch,
+	type SearchConfig
+} from './query/search.js';
 
-export { withSoftDelete, type SoftDeleteOptions } from './query/softDelete.js';
+export {
+	getRestoreValues,
+	getSoftDeleteValues,
+	onlyDeleted,
+	withSoftDelete,
+	type SoftDeleteOptions
+} from './query/softDelete.js';
 
 // Transaction Helpers
 export {
@@ -47,4 +58,4 @@ export {
 } from './bulk/operations.js';
 
 // Seed Helpers
-export { createSeeder, type SeederConfig } from './seed/seeder.js';
+export { createSeeder, fakeData, type SeederConfig } from './seed/seeder.js';

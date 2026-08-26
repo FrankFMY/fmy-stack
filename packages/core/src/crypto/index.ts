@@ -8,6 +8,32 @@
  */
 
 import { nanoid } from 'nanoid';
+import { compare as compareBcrypt } from 'bcryptjs';
+
+const passwordKdf = 'pbkdf2-sha256';
+const passwordKdfIterations = 600_000;
+const passwordKdfBytes = 32;
+const maxPasswordCodeUnits = 4_096;
+const maxPasswordHashCodeUnits = 4_096;
+
+async function derivePasswordHash(
+	password: string,
+	salt: string,
+	iterations: number
+): Promise<string> {
+	const encoder = new TextEncoder();
+	const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
+		'deriveBits'
+	]);
+	const derived = await crypto.subtle.deriveBits(
+		{ name: 'PBKDF2', hash: 'SHA-256', iterations, salt: encoder.encode(salt) },
+		key,
+		passwordKdfBytes * 8
+	);
+	return Array.from(new Uint8Array(derived))
+		.map((byte) => byte.toString(16).padStart(2, '0'))
+		.join('');
+}
 
 /**
  * Генерирует UUID версии 4 (случайный UUID).
@@ -59,9 +85,18 @@ export function generateToken(length = 32): string {
  * generateSecureRandom(1, 10) // Может вернуть любое число от 1 до 10
  */
 export function generateSecureRandom(min: number, max: number): number {
+	if (!Number.isSafeInteger(min) || !Number.isSafeInteger(max) || max < min) {
+		throw new RangeError('Random range is invalid');
+	}
 	const range = max - min + 1;
+	if (!Number.isSafeInteger(range) || range < 1 || range > 0x1_0000_0000) {
+		throw new RangeError('Random range is invalid');
+	}
+	const limit = Math.floor(0x1_0000_0000 / range) * range;
 	const bytes = new Uint32Array(1);
-	crypto.getRandomValues(bytes);
+	do {
+		crypto.getRandomValues(bytes);
+	} while (bytes[0]! >= limit);
 	return min + (bytes[0]! % range);
 }
 
@@ -99,28 +134,20 @@ export async function hashSHA512(text: string): Promise<string> {
 
 /**
  * Хэширует пароль для безопасного хранения.
- * В среде Bun использует bcrypt (рекомендуется), иначе SHA-256 с солью.
+ * Использует переносимый PBKDF2-SHA256 с уникальной солью и 600 000 итераций.
  * @param password - Пароль для хэширования
  * @returns Promise с хэшированным паролем
  * @example
  * const hash = await hashPassword('mySecretPassword');
- * // В Bun: '$2b$12$...'
- * // В других средах: '$sha256$salt$hash'
+ * // '$pbkdf2-sha256$600000$salt$hash'
  */
 export async function hashPassword(password: string): Promise<string> {
-	const bunPassword = getBunPassword();
-
-	if (bunPassword) {
-		return await bunPassword.hash(password, {
-			algorithm: 'bcrypt',
-			cost: 12
-		});
+	if (typeof password !== 'string' || password.length > maxPasswordCodeUnits) {
+		throw new RangeError('Password is too large');
 	}
-
-	// Fallback: используем SHA-256 с солью (менее безопасно, но работает везде)
 	const salt = generateToken(16);
-	const hash = await hashSHA256(salt + password);
-	return `$sha256$${salt}$${hash}`;
+	const hash = await derivePasswordHash(password, salt, passwordKdfIterations);
+	return `$${passwordKdf}$${passwordKdfIterations}$${salt}$${hash}`;
 }
 
 /**
@@ -136,23 +163,72 @@ export async function hashPassword(password: string): Promise<string> {
  * }
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-	const bunPassword = getBunPassword();
-
-	if (bunPassword) {
-		return await bunPassword.verify(password, hash);
+	if (
+		typeof password !== 'string' ||
+		typeof hash !== 'string' ||
+		password.length > maxPasswordCodeUnits ||
+		hash.length > maxPasswordHashCodeUnits
+	) {
+		return false;
+	}
+	if (hash.startsWith(`$${passwordKdf}$`)) {
+		const parts = hash.split('$');
+		if (parts.length !== 5) return false;
+		const iterations = Number(parts[2]);
+		const salt = parts[3]!;
+		const storedHash = parts[4]!;
+		if (
+			!Number.isSafeInteger(iterations) ||
+			iterations < 100_000 ||
+			iterations > 1_000_000 ||
+			!/^[0-9a-f]{32}$/u.test(salt) ||
+			!/^[0-9a-f]{64}$/u.test(storedHash)
+		) {
+			return false;
+		}
+		const computedHash = await derivePasswordHash(password, salt, iterations);
+		return secureCompare(storedHash, computedHash);
 	}
 
-	// Fallback: проверка SHA-256 хэша
 	if (hash.startsWith('$sha256$')) {
 		const parts = hash.split('$');
 		if (parts.length !== 4) return false;
 		const salt = parts[2]!;
 		const storedHash = parts[3]!;
+		if (!/^[0-9a-f]{32}$/u.test(salt) || !/^[0-9a-f]{64}$/u.test(storedHash)) return false;
 		const computedHash = await hashSHA256(salt + password);
 		return secureCompare(storedHash, computedHash);
 	}
 
+	if (/^\$2[aby]\$[0-9]{2}\$/u.test(hash)) {
+		try {
+			return await compareBcrypt(password, hash);
+		} catch {
+			return false;
+		}
+	}
+
+	const bunPassword = getBunPassword();
+	if (bunPassword) {
+		try {
+			return await bunPassword.verify(password, hash);
+		} catch {
+			return false;
+		}
+	}
+
 	return false;
+}
+
+/**
+ * Возвращает true, если хэш нужно заменить текущим форматом после успешной проверки пароля.
+ */
+export function passwordHashNeedsRehash(hash: string): boolean {
+	if (typeof hash !== 'string' || hash.length > maxPasswordHashCodeUnits) return true;
+	return !new RegExp(
+		`^\\$${passwordKdf}\\$${passwordKdfIterations}\\$[0-9a-f]{32}\\$[0-9a-f]{64}$`,
+		'u'
+	).test(hash);
 }
 
 /**
@@ -164,6 +240,9 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
  * generateOTP(8) // '98765432'
  */
 export function generateOTP(length = 6): string {
+	if (!Number.isSafeInteger(length) || length < 1 || length > 128) {
+		throw new RangeError('OTP length is invalid');
+	}
 	const digits = '0123456789';
 	let otp = '';
 	for (let i = 0; i < length; i++) {
@@ -193,6 +272,9 @@ export function generateApiKey(): string {
  * generateRandomPassword() // 'Ab3!xYz9$mNp2qR5'
  */
 export function generateRandomPassword(length = 16): string {
+	if (!Number.isSafeInteger(length) || length < 4 || length > 1_024) {
+		throw new RangeError('Password length is invalid');
+	}
 	const lowercase = 'abcdefghijklmnopqrstuvwxyz';
 	const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	const numbers = '0123456789';

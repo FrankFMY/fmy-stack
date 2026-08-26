@@ -125,5 +125,6 @@ export function authPlugin(config: AuthConfig) {
 					}
 				});
 			}
-		}));
+		}))
+		.as('scoped');
 }

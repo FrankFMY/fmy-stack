@@ -2,7 +2,7 @@
  * @fileoverview Tests for crypto utilities
  */
 
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, spyOn, test } from 'bun:test';
 import {
 	generateUUID,
 	generateNanoid,
@@ -12,6 +12,7 @@ import {
 	hashSHA512,
 	hashPassword,
 	verifyPassword,
+	passwordHashNeedsRehash,
 	generateOTP,
 	generateApiKey,
 	generateRandomPassword,
@@ -83,6 +84,40 @@ describe('generateSecureRandom', () => {
 		expect(results.has(2)).toBe(true);
 		expect(results.has(3)).toBe(true);
 	});
+
+	test('should reject the biased uint32 tail before mapping into a bounded range', () => {
+		const values = [0xffff_ffff, 7];
+		const getRandomValues = spyOn(crypto, 'getRandomValues').mockImplementation(((
+			array: Uint32Array
+		) => {
+			array[0] = values.shift()!;
+			return array;
+		}) as typeof crypto.getRandomValues);
+		try {
+			expect(generateSecureRandom(0, 9)).toBe(7);
+			expect(getRandomValues).toHaveBeenCalledTimes(2);
+		} finally {
+			getRandomValues.mockRestore();
+		}
+	});
+
+	test('should reject invalid ranges before sampling randomness', () => {
+		const getRandomValues = spyOn(crypto, 'getRandomValues').mockImplementation(() => {
+			throw new Error('randomness must not be sampled');
+		});
+		try {
+			for (const [min, max] of [
+				[1.5, 2],
+				[2, 1],
+				[0, 0x1_0000_0000]
+			]) {
+				expect(() => generateSecureRandom(min, max)).toThrow(RangeError);
+			}
+			expect(getRandomValues).not.toHaveBeenCalled();
+		} finally {
+			getRandomValues.mockRestore();
+		}
+	});
 });
 
 describe('hashSHA256', () => {
@@ -111,6 +146,7 @@ describe('hashPassword and verifyPassword', () => {
 		const hash = await hashPassword(password);
 
 		expect(hash).not.toBe(password);
+		expect(hash).toStartWith('$pbkdf2-sha256$');
 		expect(await verifyPassword(password, hash)).toBe(true);
 		expect(await verifyPassword('WrongPassword', hash)).toBe(false);
 	});
@@ -124,9 +160,41 @@ describe('hashPassword and verifyPassword', () => {
 		expect(await verifyPassword(password, hash1)).toBe(true);
 		expect(await verifyPassword(password, hash2)).toBe(true);
 	});
+
+	test('should verify legacy salted SHA-256 before runtime-specific password handlers', async () => {
+		const password = 'LegacyPassword123!';
+		const salt = '0123456789abcdef0123456789abcdef';
+		const digest = await hashSHA256(salt + password);
+		const legacyHash = `$sha256$${salt}$${digest}`;
+		expect(await verifyPassword(password, legacyHash)).toBe(true);
+		expect(await verifyPassword('WrongPassword', legacyHash)).toBe(false);
+		expect(passwordHashNeedsRehash(legacyHash)).toBe(true);
+	});
+
+	test('should identify only the current KDF policy as current', async () => {
+		const currentHash = await hashPassword('CurrentPassword123!');
+		expect(passwordHashNeedsRehash(currentHash)).toBe(false);
+		expect(passwordHashNeedsRehash('$2b$12$legacy-bcrypt')).toBe(true);
+		expect(passwordHashNeedsRehash('malformed')).toBe(true);
+	});
+
+	test('should bound password and encoded hash inputs before KDF allocation', async () => {
+		const currentHash = await hashPassword('BoundedPassword123!');
+		await expect(hashPassword('x'.repeat(4097))).rejects.toThrow(RangeError);
+		expect(await verifyPassword('x'.repeat(4097), currentHash)).toBe(false);
+		expect(await verifyPassword('password', `$sha256$$${await hashSHA256('password')}`)).toBe(
+			false
+		);
+		expect(await verifyPassword('password', 'x'.repeat(4097))).toBe(false);
+	});
 });
 
 describe('generateOTP', () => {
+	test('should reject non-integer and out-of-range lengths', () => {
+		for (const length of [Number.NaN, Number.POSITIVE_INFINITY, 0, 3.5, 129]) {
+			expect(() => generateOTP(length)).toThrow(RangeError);
+		}
+	});
 	test('should generate OTP with default length', () => {
 		const otp = generateOTP();
 		expect(otp).toHaveLength(6);
@@ -147,6 +215,11 @@ describe('generateApiKey', () => {
 });
 
 describe('generateRandomPassword', () => {
+	test('should reject non-integer and out-of-range lengths', () => {
+		for (const length of [Number.NaN, Number.POSITIVE_INFINITY, 3, 4.5, 1_025]) {
+			expect(() => generateRandomPassword(length)).toThrow(RangeError);
+		}
+	});
 	test('should generate password with default length', () => {
 		const password = generateRandomPassword();
 		expect(password).toHaveLength(16);

@@ -1,0 +1,5 @@
+/*
+ * Register the packaged Svelte components as Tailwind CSS v4 sources.
+ * Import this file after `@import "tailwindcss";` in the consumer stylesheet.
+ */
+@source "./**/*.{js,svelte}";

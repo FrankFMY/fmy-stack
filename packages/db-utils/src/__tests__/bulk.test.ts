@@ -3,7 +3,8 @@
  */
 
 import { describe, expect, test } from 'bun:test';
-import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import type { SQL } from 'drizzle-orm';
+import { PgDialect, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { bulkInsert, bulkUpdate, bulkUpsert } from '../bulk/operations.js';
 
 const testTable = pgTable('test', {
@@ -14,6 +15,7 @@ const testTable = pgTable('test', {
 
 interface MockDb {
 	insertions: unknown[];
+	queries: unknown[];
 	rowCount: number;
 	insert(table: unknown): {
 		values(data: unknown[]): {
@@ -28,6 +30,7 @@ interface MockDb {
 function createMockDb(): MockDb {
 	const db: MockDb = {
 		insertions: [],
+		queries: [],
 		rowCount: 0,
 		insert(_table: unknown) {
 			return {
@@ -43,7 +46,8 @@ function createMockDb(): MockDb {
 		transaction(callback: (tx: MockDb) => Promise<void>): Promise<void> {
 			return callback(db);
 		},
-		execute(): Promise<{ rowCount: number }> {
+		execute(query: unknown): Promise<{ rowCount: number }> {
+			db.queries.push(query);
 			return Promise.resolve({ rowCount: db.rowCount });
 		}
 	};
@@ -99,6 +103,17 @@ describe('bulkInsert', () => {
 		);
 		expect(result).toBe(1);
 	});
+
+	test('should reject a fractional chunk size', async () => {
+		const db = createMockDb();
+		for (const chunkSize of [0, -1, 1.5]) {
+			await expect(
+				bulkInsert(asBulkDb(db), testTable, [{ name: 'test', email: 'test@example.com' }], {
+					chunkSize
+				})
+			).rejects.toThrow(RangeError);
+		}
+	});
 });
 
 describe('bulkUpdate', () => {
@@ -123,6 +138,33 @@ describe('bulkUpdate', () => {
 		const data = [{ id: '1', name: 'updated' }];
 		const result = await bulkUpdate(asBulkDb(db), 'test', data);
 		expect(result).toBe(1);
+	});
+
+	test('should quote caller-controlled table and column identifiers', async () => {
+		const db = createMockDb();
+		await bulkUpdate(asBulkDb(db), 'users"; DROP TABLE audit; --', [
+			{ id: 'record-1', 'name"; DROP TABLE audit; --': 'safe-value' }
+		]);
+		const query = new PgDialect().sqlToQuery(db.queries[0] as SQL);
+		expect(query.sql).toContain('UPDATE "users""; DROP TABLE audit; --"');
+		expect(query.sql).toContain('"name""; DROP TABLE audit; --" = $1');
+		expect(query.params).toEqual(['safe-value', 'record-1']);
+	});
+
+	test('should skip id-only no-op updates without executing SQL', async () => {
+		const db = createMockDb();
+		const result = await bulkUpdate(asBulkDb(db), 'test', [{ id: 'record-1' }]);
+		expect(result).toBe(0);
+		expect(db.queries).toEqual([]);
+	});
+
+	test('should reject a fractional chunk size', async () => {
+		const db = createMockDb();
+		for (const chunkSize of [0, -1, 1.5]) {
+			await expect(
+				bulkUpdate(asBulkDb(db), 'test', [{ id: '1', name: 'updated' }], { chunkSize })
+			).rejects.toThrow(RangeError);
+		}
 	});
 });
 
@@ -167,5 +209,49 @@ describe('bulkUpsert', () => {
 			['name'] as Parameters<typeof bulkUpsert>[4]
 		);
 		expect(result).toBe(1);
+	});
+
+	test('should use physical database names in EXCLUDED update expressions', async () => {
+		const mappedTable = pgTable('mapped', {
+			id: uuid('id').primaryKey(),
+			displayName: text('display_name')
+		});
+		let updateConfig: unknown;
+		const db = {
+			insert: () => ({
+				values: () => ({
+					onConflictDoUpdate: (config: unknown) => {
+						updateConfig = config;
+						return { rowCount: 1 };
+					}
+				})
+			})
+		};
+		await bulkUpsert(
+			db as unknown as Parameters<typeof bulkUpsert>[0],
+			mappedTable,
+			[{ id: 'record-1', displayName: 'Example' }],
+			'id',
+			['displayName']
+		);
+		const set = (updateConfig as { set: { displayName?: SQL } }).set;
+		const compiled = new PgDialect().sqlToQuery(set.displayName!);
+		expect(compiled.sql).toBe('EXCLUDED."display_name"');
+	});
+
+	test('should reject a fractional chunk size', async () => {
+		const db = createMockDb();
+		for (const chunkSize of [0, -1, 1.5]) {
+			await expect(
+				bulkUpsert(
+					asBulkDb(db),
+					testTable,
+					[{ name: 'test', email: 'test@example.com' }] as Parameters<typeof bulkUpsert>[2],
+					'id' as Parameters<typeof bulkUpsert>[3],
+					['name'] as Parameters<typeof bulkUpsert>[4],
+					{ chunkSize }
+				)
+			).rejects.toThrow(RangeError);
+		}
 	});
 });

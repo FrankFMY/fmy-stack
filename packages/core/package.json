@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/core",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "TypeScript utilities for dates, money, strings, phones, identifiers, collections, functions and cryptography.",
 	"author": {
 		"name": "Artem Prianishnikov",
@@ -57,10 +57,11 @@
 	"files": [
 		"dist",
 		"README.md",
-		"LICENSE"
+		"LICENSE",
+		"NOTICE"
 	],
 	"scripts": {
-		"build": "tsc",
+		"build": "rm -rf dist && tsc",
 		"dev": "tsc --watch",
 		"clean": "rm -rf dist",
 		"lint": "biome lint src/",
@@ -73,6 +74,7 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
+		"bcryptjs": "^3.0.3",
 		"nanoid": "^5.1.5"
 	},
 	"keywords": [
@@ -97,5 +99,7 @@
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
 	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/core#readme",
-	"private": true
+	"publishConfig": {
+		"access": "public"
+	}
 }

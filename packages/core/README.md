@@ -73,9 +73,13 @@ validateSNILS('11223344595'); // true
 ### Crypto Utilities
 
 ```typescript
-import { hashPassword, generateToken } from '@frankfmy/core';
+import { hashPassword, passwordHashNeedsRehash, verifyPassword, generateToken } from '@frankfmy/core';
 
-const hash = await hashPassword('password123'); // Bcrypt hash
+const hash = await hashPassword('password123'); // PBKDF2-SHA256, 600k iterations
+const valid = await verifyPassword('password123', hash);
+if (valid && passwordHashNeedsRehash(hash)) {
+  // Replace a verified legacy SHA-256/bcrypt hash with await hashPassword(password).
+}
 const token = generateToken(32); // nanoid token
 ```
 

@@ -104,7 +104,19 @@ import { rateLimiter } from '@frankfmy/elysia-kit';
 app.use(rateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: 100, // max requests per window
+  maxEntries: 10_000, // bounded in-memory buckets
   message: 'Too many requests'
+}));
+```
+
+The safe default is one global `anonymous` bucket because a Web `Request` does not expose an authoritative peer IP. Supply an application-owned `keyGenerator` for per-client limiting. Set `trustProxy: true` only when the application is behind a configured trusted proxy that overwrites `X-Forwarded-For`/`X-Real-IP`.
+
+```typescript
+app.use(rateLimiter({
+  keyGenerator: (request) => authenticatedSessionId(request),
+  max: 100,
+  maxEntries: 10_000,
+  windowMs: 60_000
 }));
 ```
 

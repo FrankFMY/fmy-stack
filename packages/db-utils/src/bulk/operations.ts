@@ -7,8 +7,8 @@
  * Утилиты для массовых операций в Drizzle ORM
  */
 
-import { sql } from 'drizzle-orm';
-import type { PgDatabase, PgInsertValue, PgTable } from 'drizzle-orm/pg-core';
+import { getTableColumns, sql } from 'drizzle-orm';
+import type { PgColumn, PgDatabase, PgInsertValue, PgTable } from 'drizzle-orm/pg-core';
 
 /**
  * Тип для результата Drizzle insert операции с возможным rowCount.
@@ -54,6 +54,7 @@ export async function bulkInsert<
 	options: BulkOptions = {}
 ): Promise<number> {
 	const { chunkSize = 1000, skipDuplicates = false } = options;
+	assertChunkSize(chunkSize);
 
 	if (data.length === 0) {
 		return 0;
@@ -104,6 +105,7 @@ export async function bulkUpdate<
 	options: BulkOptions = {}
 ): Promise<number> {
 	const { chunkSize = 500 } = options;
+	assertChunkSize(chunkSize);
 
 	if (data.length === 0) {
 		return 0;
@@ -116,7 +118,9 @@ export async function bulkUpdate<
 		await db.transaction(async (tx) => {
 			for (const item of chunk) {
 				const { id, ...values } = item;
-				const setClauses = Object.entries(values)
+				const entries = Object.entries(values);
+				if (entries.length === 0) continue;
+				const setClauses = entries
 					.map(([key, value]) => sql`${sql.identifier(key)} = ${value}`)
 					.reduce((acc, clause) => sql`${acc}, ${clause}`);
 
@@ -167,6 +171,7 @@ export async function bulkUpsert<
 	options: BulkOptions = {}
 ): Promise<number> {
 	const { chunkSize = 1000 } = options;
+	assertChunkSize(chunkSize);
 
 	if (data.length === 0) {
 		return 0;
@@ -176,18 +181,20 @@ export async function bulkUpsert<
 	const chunks = chunkArray(data, chunkSize);
 
 	for (const chunk of chunks) {
+		const tableColumns = getTableColumns(table) as Record<string, PgColumn>;
 		const updateSet = updateColumns.reduce(
 			(acc, col) => {
+				const column = tableColumns[col as string];
+				if (!column) throw new RangeError(`Unknown update column: ${String(col)}`);
 				(acc as Record<string, unknown>)[col as string] =
-					sql`EXCLUDED.${sql.identifier(col as string)}`;
+					sql`EXCLUDED.${sql.identifier(column.name)}`;
 				return acc;
 			},
 			{} as Record<string, unknown>
 		);
 
-		// Безопасный доступ к колонке таблицы для conflict target
-		// biome-ignore lint/suspicious/noExplicitAny: Dynamic property access for Drizzle conflict target
-		const conflictColumn = (table as Record<string, any>)[conflictTarget as string];
+		const conflictColumn = tableColumns[conflictTarget as string];
+		if (!conflictColumn) throw new RangeError(`Unknown conflict column: ${String(conflictTarget)}`);
 
 		const result = (await db.insert(table).values(chunk).onConflictDoUpdate({
 			target: conflictColumn,
@@ -213,4 +220,10 @@ function chunkArray<T>(array: T[], size: number): T[][] {
 		chunks.push(array.slice(i, i + size));
 	}
 	return chunks;
+}
+
+function assertChunkSize(size: number): void {
+	if (!Number.isSafeInteger(size) || size < 1 || size > 100_000) {
+		throw new RangeError('Bulk chunkSize is invalid');
+	}
 }

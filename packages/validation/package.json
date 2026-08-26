@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/validation",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "ArkType schemas for common identity, account, pagination, money and validation contracts.",
 	"author": {
 		"name": "Artem Prianishnikov",
@@ -21,10 +21,11 @@
 	"files": [
 		"dist",
 		"README.md",
-		"LICENSE"
+		"LICENSE",
+		"NOTICE"
 	],
 	"scripts": {
-		"build": "tsc",
+		"build": "rm -rf dist && tsc",
 		"dev": "tsc --watch",
 		"clean": "rm -rf dist",
 		"lint": "biome lint src/",
@@ -35,7 +36,7 @@
 	},
 	"dependencies": {
 		"arktype": "^2.1.28",
-		"@frankfmy/core": "^1.0.0"
+		"@frankfmy/core": "^1.1.2"
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3"
@@ -60,5 +61,7 @@
 		"url": "https://github.com/FrankFMY/fmy-stack/issues"
 	},
 	"homepage": "https://github.com/FrankFMY/fmy-stack/tree/main/packages/validation#readme",
-	"private": true
+	"publishConfig": {
+		"access": "public"
+	}
 }

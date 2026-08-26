@@ -13,15 +13,15 @@ I built these packages to keep recurring product-system concerns explicit and te
 
 | Package | Scope | Verification |
 |---|---|---|
-| `@frankfmy/core` | Dates, money, strings, phone normalization, business identifiers, collections, functions, IDs and cryptographic helpers | 234 tests / 607 assertions |
+| `@frankfmy/core` | Dates, money, strings, phone normalization, business identifiers, collections, functions, IDs and cryptographic helpers | 241 tests / 634 assertions |
 | `@frankfmy/validation` | ArkType schemas for identity, accounts, money, passwords, pagination and common request contracts | 46 tests / 72 assertions |
-| `@frankfmy/db-utils` | Drizzle pagination, search, soft deletion, transaction retry, batch operations and seeding | 43 tests / 67 assertions |
-| `@frankfmy/elysia-kit` | Elysia application setup, auth helpers, errors, rate limiting, logging and response contracts | 34 tests / 53 assertions |
-| `@frankfmy/ui` | Svelte 5 + Tailwind components for forms, tables, pagination, overlays, feedback and themes | strict Svelte check and package build |
+| `@frankfmy/db-utils` | Drizzle pagination, search, soft deletion, transaction retry, batch operations and seeding | 48 tests / 80 assertions |
+| `@frankfmy/elysia-kit` | Elysia application setup, auth helpers, errors, rate limiting, logging and response contracts | 40 tests / 66 assertions |
+| `@frankfmy/ui` | Svelte 5 + Tailwind components for forms, tables, pagination, overlays, feedback and themes | strict Svelte check, package build, and styles export consumer |
 
 ## Repository status
 
-The source repository is public. Every workspace package remains marked `private: true`; npm publication is intentionally deferred until package-level API, tarball, consumer, provenance, and SemVer release gates are completed.
+The source repository is public. The five workspace packages are versioned together at `1.1.2`. Publication is allowed only from the immutable release workflow after the complete monorepo and coordinated tarball-consumer gates pass.
 
 ## Quick start
 
@@ -109,6 +109,7 @@ bun run lint
 bun run check
 bun run test
 bun run build
+bun run packages:check
 bun audit
 ```
 
