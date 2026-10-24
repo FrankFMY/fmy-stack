@@ -8,7 +8,7 @@
  */
 
 import { cors } from '@elysiajs/cors';
-import { swagger } from '@elysiajs/swagger';
+import { openapi } from '@elysiajs/openapi';
 import { Elysia } from 'elysia';
 import { errorHandler } from '../middleware/errorHandler.js';
 import { requestLogger } from '../middleware/requestLogger.js';
@@ -112,8 +112,9 @@ export function createApp(config: AppConfig = {}) {
 	// Swagger documentation
 	if (finalConfig.swagger) {
 		app.use(
-			swagger({
+			openapi({
 				path: finalConfig.swagger.path ?? '/docs',
+				specPath: `${finalConfig.swagger.path ?? '/docs'}/json`,
 				documentation: {
 					info: {
 						title: finalConfig.swagger.documentation?.info?.title ?? 'FrankFMY API',

@@ -69,7 +69,7 @@ export function authPlugin(config: AuthConfig) {
 				exp: finalConfig.expiresIn ?? '7d'
 			})
 		)
-		.derive(async ({ jwt, headers, cookie }) => {
+		.derive({ as: 'scoped' }, async ({ jwt, headers, cookie }) => {
 			// Get token from header or cookie
 			let token: string | undefined;
 
@@ -106,25 +106,29 @@ export function authPlugin(config: AuthConfig) {
 				return { user: null, token: null };
 			}
 		})
-		.macro(({ onBeforeHandle }) => ({
+		.macro({
 			auth(enabled: boolean) {
 				if (!enabled) return;
-				onBeforeHandle(({ user }: { user: AuthUser | null }) => {
-					if (!user) {
-						throw new ApiError(HttpStatus.UNAUTHORIZED, 'Authentication required');
+				return {
+					beforeHandle({ user }: { user?: AuthUser | null }) {
+						if (!user) {
+							throw new ApiError(HttpStatus.UNAUTHORIZED, 'Authentication required');
+						}
 					}
-				});
+				};
 			},
 			roles(allowedRoles: string[]) {
-				onBeforeHandle(({ user }: { user: AuthUser | null }) => {
-					if (!user) {
-						throw new ApiError(HttpStatus.UNAUTHORIZED, 'Authentication required');
+				return {
+					beforeHandle({ user }: { user?: AuthUser | null }) {
+						if (!user) {
+							throw new ApiError(HttpStatus.UNAUTHORIZED, 'Authentication required');
+						}
+						if (!user.role || !allowedRoles.includes(user.role)) {
+							throw new ApiError(HttpStatus.FORBIDDEN, 'Insufficient permissions');
+						}
 					}
-					if (!user.role || !allowedRoles.includes(user.role)) {
-						throw new ApiError(HttpStatus.FORBIDDEN, 'Insufficient permissions');
-					}
-				});
+				};
 			}
-		}))
+		})
 		.as('scoped');
 }

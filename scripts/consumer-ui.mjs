@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
+import { build } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import tailwindcss from '@tailwindcss/vite';
+
+writeFileSync('App.svelte', `<script>import { Button, Input } from '@frankfmy/ui';</script><Button variant="primary">Qualified component</Button><Input value="reader" />`);
+writeFileSync('app.css', '@import "tailwindcss";\n@import "@frankfmy/ui/styles.css";\n');
+writeFileSync('entry.mjs', 'import { mount } from "svelte"; import App from "./App.svelte"; import "./app.css"; mount(App, { target: document.body });\n');
+writeFileSync('index.html', '<!doctype html><html><head><title>Consumer</title></head><body><script type="module" src="/entry.mjs"></script></body></html>');
+const warnings = [];
+const compiler = () => svelte({ configFile: false, onwarn: (warning) => warnings.push(warning) });
+await build({ configFile: false, plugins: [compiler(), tailwindcss()], build: { outDir: 'client' } });
+const assets = readdirSync('client/assets').filter((name) => name.endsWith('.css'));
+assert(assets.length > 0, 'application CSS must be emitted');
+const css = assets.map((name) => readFileSync(`client/assets/${name}`, 'utf8')).join('');
+assert(css.includes('.bg-blue-600'), 'Tailwind must scan packaged Svelte component classes');
+writeFileSync('server.mjs', 'import { render } from "svelte/server"; import App from "./App.svelte"; export const html = render(App).body;\n');
+await build({ configFile: false, plugins: [compiler()], ssr: { noExternal: ['@frankfmy/ui'] }, build: { ssr: 'server.mjs', outDir: 'ssr', rollupOptions: { output: { entryFileNames: 'server.mjs' } } } });
+const { html } = await import(pathToFileURL(resolve('ssr/server.mjs')));
+assert(html.includes('Qualified component'));
+assert(html.includes('value="reader"'));
+assert.equal(warnings.length, 0, JSON.stringify(warnings));
+console.log('installed Svelte client + Tailwind CSS + SSR: PASS (zero component warnings)');
