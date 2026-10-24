@@ -2,7 +2,7 @@
 
 Elysia application setup, JWT authentication, request middleware, API errors, and response helpers for Bun backends.
 
-[npm](https://www.npmjs.com/package/@frankfmy/elysia-kit) · [Source](https://github.com/FrankFMY/fmy-stack/tree/main/packages/elysia-kit) · [Issues](https://github.com/FrankFMY/fmy-stack/issues) · [Author](../../README.md#author)
+[npm](https://www.npmjs.com/package/@frankfmy/elysia-kit) · [Source](https://github.com/FrankFMY/fmy-stack/tree/main/packages/elysia-kit) · [Issues](https://github.com/FrankFMY/fmy-stack/issues) · [Author](https://github.com/FrankFMY/fmy-stack#author)
 
 ## Release status and compatibility
 
@@ -244,7 +244,9 @@ The `swagger` configuration name remains supported in 2.0.0, backed by the maint
 
 ## Author
 
-**Artem Prianishnikov** — [root author details](../../README.md#author).
+By [Artem Prianishnikov](https://github.com/FrankFMY) (FrankFMY).
+
+[Email](mailto:Pryanishnikovartem@gmail.com) · [Proton Mail](mailto:frankfmy@proton.me) · [Telegram](https://t.me/FrankFMY) · [LinkedIn](https://www.linkedin.com/in/frankfmy/) · [X](https://x.com/FrankFMY) · [Website](https://frankfmy.com) · [GitHub](https://github.com/FrankFMY) · [npm](https://www.npmjs.com/~frankfmy)
 
 ## License
 

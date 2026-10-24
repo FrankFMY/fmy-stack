@@ -302,6 +302,8 @@ Validate incoming pagination values before calling this repository, and enforce 
 
 ## Author and license
 
-By [Artem Prianishnikov](https://github.com/FrankFMY/fmy-stack#author).
+By [Artem Prianishnikov](https://github.com/FrankFMY) (FrankFMY).
+
+[Email](mailto:Pryanishnikovartem@gmail.com) · [Proton Mail](mailto:frankfmy@proton.me) · [Telegram](https://t.me/FrankFMY) · [LinkedIn](https://www.linkedin.com/in/frankfmy/) · [X](https://x.com/FrankFMY) · [Website](https://frankfmy.com) · [GitHub](https://github.com/FrankFMY) · [npm](https://www.npmjs.com/~frankfmy)
 
 The current author-owned source is licensed under Apache-2.0; see [LICENSE](./LICENSE) and [NOTICE](./NOTICE). Previously published versions **1.1.1 and earlier remain under their original PolyForm Noncommercial license**. This change does not retroactively relicense those releases or third-party code.
