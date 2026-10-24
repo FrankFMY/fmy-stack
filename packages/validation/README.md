@@ -235,6 +235,8 @@ Install `elysia` separately if using this integration. The validation package it
 
 ## Author and license
 
-By [Artem Prianishnikov](https://github.com/FrankFMY/fmy-stack#author).
+By [Artem Prianishnikov](https://github.com/FrankFMY) (FrankFMY).
+
+[Email](mailto:Pryanishnikovartem@gmail.com) · [Proton Mail](mailto:frankfmy@proton.me) · [Telegram](https://t.me/FrankFMY) · [LinkedIn](https://www.linkedin.com/in/frankfmy/) · [X](https://x.com/FrankFMY) · [Website](https://frankfmy.com) · [GitHub](https://github.com/FrankFMY) · [npm](https://www.npmjs.com/~frankfmy)
 
 Current author-owned source is Apache-2.0; see [LICENSE](LICENSE) and [NOTICE](NOTICE). Published versions **1.1.1 and earlier remain under their original PolyForm Noncommercial license**. This does not retroactively relicense those artifacts or third-party dependencies.
