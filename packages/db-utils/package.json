@@ -1,6 +1,6 @@
 {
 	"name": "@frankfmy/db-utils",
-	"version": "1.1.2",
+	"version": "2.0.0",
 	"description": "Drizzle ORM helpers for pagination, search, soft delete, transactions, bulk operations and seeding.",
 	"author": {
 		"name": "Artem Prianishnikov",

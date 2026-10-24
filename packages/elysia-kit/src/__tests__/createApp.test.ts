@@ -6,6 +6,25 @@ import { describe, expect, test } from 'bun:test';
 import { createApp } from '../app/createApp.js';
 
 describe('createApp', () => {
+	test('preserves configured docs and JSON endpoints with real route metadata', async () => {
+		const app = createApp({
+			prefix: '/api',
+			logging: false,
+			swagger: {
+				path: '/reference',
+				documentation: { info: { title: 'Consumer API', version: '2.0.0' } }
+			}
+		}).get('/health', () => 'healthy');
+		const ui = await app.handle(new Request('http://localhost/api/reference'));
+		expect(ui.status).toBe(200);
+		expect(ui.headers.get('content-type')).toContain('text/html');
+		const response = await app.handle(new Request('http://localhost/api/reference/json'));
+		expect(response.status).toBe(200);
+		const document = await response.json();
+		expect(document.info.title).toBe('Consumer API');
+		expect(document.info.version).toBe('2.0.0');
+		expect(document.paths['/api/health']).toBeDefined();
+	});
 	test('should create app with default config', async () => {
 		const app = createApp();
 		const response = await app
