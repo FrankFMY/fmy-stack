@@ -6,12 +6,12 @@ Elysia application setup, JWT authentication, request middleware, API errors, an
 
 ## Release status and compatibility
 
-This README describes the **2.0.0 release candidate, pending publication**. It is not a claim that version 2.0.0 is available on npm. The npm link shows the registry's published releases; use the repository workspace to evaluate this candidate before publication.
+This README documents the **2.0.0 API contract**. The npm link identifies available published versions; use the matching package version for the middleware and compatibility contracts below.
 
-The candidate requires Elysia `>=1.4.29 <2`, replacing the previous broad `^1` peer range. It is an ESM package intended for Bun. Elysia remains a consumer-provided peer; the build keeps dependencies external, including `elysia` and `jose`. `jose` is a declared runtime dependency, not bundled code or an additional peer you must install manually.
+Version 2.0.0 requires Elysia `>=1.4.29 <2`, replacing the previous broad `^1` peer range. It is an ESM package intended for Bun. Elysia remains a consumer-provided peer; the build keeps dependencies external, including `elysia` and `jose`. `jose` is a declared runtime dependency, not bundled code or an additional peer you must install manually.
 
 ```bash
-# Installs the currently published package, not the unpublished candidate.
+# Select the matching published package and a compatible Elysia peer.
 bun add @frankfmy/elysia-kit 'elysia@>=1.4.29 <2'
 ```
 

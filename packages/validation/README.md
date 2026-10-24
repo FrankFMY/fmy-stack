@@ -6,7 +6,7 @@ ArkType runtime schemas and inferred TypeScript types for common identity, accou
 
 ## Release status and installation
 
-This README describes the **1.1.2 release candidate, pending publication**. Check npm for available versions; this command installs a published release, not an unpublished candidate:
+This README documents the **1.1.2 API contract**. Check npm for available published versions and use a matching package version; unversioned installation follows the registry's current dist-tag:
 
 ```bash
 bun add @frankfmy/validation

@@ -6,7 +6,7 @@ Svelte 5 components for forms, tables, overlays, feedback, and themes, styled wi
 
 ## Release status and requirements
 
-This README describes the **1.1.2 release candidate, pending publication**. It does not imply that this version is available on npm; the npm page shows published versions.
+This README documents the **1.1.2 API contract**. The npm page identifies available published versions; use the matching package version with these component and CSS contracts.
 
 - Svelte `^5.0.0` and a Svelte-aware compiler pipeline are required, such as SvelteKit or Vite with the Svelte plugin.
 - The root export includes `.svelte` modules and must be compiled for both browser and SSR use. It is **not a native Node.js root import**, even if you only want `cn` or theme helpers. There is no separate plain-JavaScript utilities entry point.

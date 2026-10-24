@@ -6,9 +6,9 @@ Drizzle ORM helpers for PostgreSQL schemas, pagination, search, soft deletion, t
 
 ## Release status and compatibility
 
-This README describes the **2.0.0 release candidate, pending publication**. It does not imply that this version is available on npm; check the npm page for published versions.
+This README documents the **2.0.0 API contract**. Check the npm page for available published versions and use the matching package version with these APIs.
 
-The candidate requires **`drizzle-orm >=0.45.2 <1` as an external peer dependency**. Drizzle is not bundled: install a compatible version in your application, together with your chosen PostgreSQL driver. Raising the previous `>=0.30.0` peer range is a **breaking compatibility change**, which is why this candidate targets 2.0.0 rather than a patch release. Upgrade and validate your application's Drizzle queries and migrations before adopting it.
+Version 2.0.0 requires **`drizzle-orm >=0.45.2 <1` as an external peer dependency**. Drizzle is not bundled: install a compatible version in your application, together with your chosen PostgreSQL driver. Raising the previous `>=0.30.0` peer range is a **breaking compatibility change**, which is why this change uses 2.0.0 rather than a patch release. Upgrade and validate your application's Drizzle queries and migrations before adopting it.
 
 These APIs use PostgreSQL columns, query builders, and SQL features. This README does not claim SQLite or MySQL compatibility. The package does not create a connection, install PostgreSQL extensions, or run migrations for you.
 
@@ -20,9 +20,9 @@ Install a published package and a compatible Drizzle peer:
 bun add @frankfmy/db-utils 'drizzle-orm@>=0.45.2 <1'
 ```
 
-The unversioned package install resolves a published release, not the unpublished candidate. Pin the candidate version only after publication. Configure your driver and export your Drizzle connection as `db` from `./db` in the examples below.
+Unversioned installation follows the registry's current dist-tag; select the matching published version for these APIs. Configure your driver and export your Drizzle connection as `db` from `./db` in the examples below.
 
-These examples assume a connection using Drizzle's default empty relational-schema generic (for example, `drizzle(client)`), with table objects supplied directly to query builders. Current transaction, bulk, and seeder signatures accept `PgDatabase<any>` with that default schema generic; a connection created with a registered relational schema can fail TypeScript assignability checks. Do not cast away that incompatibility without reviewing the integration; broader registered-schema typing is not claimed by this candidate.
+These examples assume a connection using Drizzle's default empty relational-schema generic (for example, `drizzle(client)`), with table objects supplied directly to query builders. Current transaction, bulk, and seeder signatures accept `PgDatabase<any>` with that default schema generic; a connection created with a registered relational schema can fail TypeScript assignability checks. Do not cast away that incompatibility without reviewing the integration; broader registered-schema typing is not part of the qualified contract in version 2.0.0.
 
 ## Schema helpers
 

@@ -6,7 +6,7 @@ ESM TypeScript utilities for dates, money, strings, Russian phone numbers and bu
 
 ## Release status and installation
 
-This README describes the **1.1.2 release candidate, pending publication**, not an already-published release. The npm page lists available versions. An unversioned install selects a published version:
+This README documents the **1.1.2 API contract**. The npm page lists available published versions; use the matching version when following these APIs. An unversioned install follows the registry's current dist-tag:
 
 ```bash
 bun add @frankfmy/core
