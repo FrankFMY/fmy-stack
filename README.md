@@ -7,9 +7,9 @@ A personal TypeScript toolkit with focused packages for core utilities, runtime 
 
 [Source](https://github.com/FrankFMY/fmy-stack) · [Issues](https://github.com/FrankFMY/fmy-stack/issues) · [Changelog](CHANGELOG.md)
 
-## Packages and candidate releases
+## Packages and versions
 
-| Package | Scope | Prepared version |
+| Package | Scope | Source version |
 | --- | --- | --- |
 | [@frankfmy/core](packages/core/README.md) · [npm](https://www.npmjs.com/package/@frankfmy/core) | Dates, money, strings, phones, business identifiers, collections, functions, IDs, and cryptography | 1.1.2 |
 | [@frankfmy/validation](packages/validation/README.md) · [npm](https://www.npmjs.com/package/@frankfmy/validation) | ArkType schemas and inferred types for identity, accounts, money, and request contracts | 1.1.2 |
@@ -17,7 +17,7 @@ A personal TypeScript toolkit with focused packages for core utilities, runtime 
 | [@frankfmy/db-utils](packages/db-utils/README.md) · [npm](https://www.npmjs.com/package/@frankfmy/db-utils) | PostgreSQL/Drizzle schema helpers, pagination, search, soft deletion, transactions, bulk operations, and seeding | 2.0.0 |
 | [@frankfmy/elysia-kit](packages/elysia-kit/README.md) · [npm](https://www.npmjs.com/package/@frankfmy/elysia-kit) | Elysia application setup, JWT authentication, errors, rate limiting, logging, and response helpers | 2.0.0 |
 
-These are **release candidates pending publication**, not a claim that these versions are on npm. Registry links show published versions; unversioned installs resolve those published versions, which may have different APIs and licenses. The package READMEs describe the candidate source in this repository.
+This table matches the versioned source contracts in this repository. Registry links identify actual published releases; use the matching package version when following its README. Earlier artifacts can have different APIs and licenses.
 
 ### Compatibility and migration
 
@@ -38,11 +38,11 @@ bun run verify
 
 Use the Bun version declared in the root `packageManager` field. `bun run verify` runs formatting, linting, type/component checks, tests, builds, package-consumer checks, and a dependency audit. Package verification installs tarballs in isolated consumers and requires network access. Results depend on the checked-out source and installed dependencies; this README does not promise fixed test counts or an evergreen clean audit.
 
-Publication is an **explicit, qualified maintainer operation**, separate from contributor verification. Automatic release-triggered publishing is disabled; maintainers qualify sealed artifacts before explicit provider publication. Do not assume creating a release or passing CI automatically publishes packages. No candidate listed here should be treated as published until its exact version is visible in the registry.
+Publication is an **explicit, qualified maintainer operation**, separate from contributor verification. Automatic release-triggered publishing is disabled; maintainers qualify sealed artifacts before explicit provider publication. Do not assume creating a release or passing CI automatically publishes packages. A package is published only when its exact version is visible in the registry.
 
 ## Examples
 
-These examples target the candidate APIs. See each package README for installation and full contracts.
+These examples target the versioned APIs listed above. See each package README for installation and full contracts.
 
 ### Core utilities
 

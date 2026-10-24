@@ -1,8 +1,8 @@
 # Changelog
 
-This file describes prepared changes, not a record of completed npm publication. Exact published versions are listed on each package's npm page linked from the [root README](README.md#packages-and-candidate-releases).
+This file describes changes to versioned source contracts. Actual published versions are listed on each package's npm page linked from the [root README](README.md#packages-and-versions).
 
-## Unreleased — candidate core/validation/ui 1.1.2; db-utils/elysia-kit 2.0.0
+## Runtime and distribution update — core/validation/ui 1.1.2; db-utils/elysia-kit 2.0.0
 
 ### Breaking compatibility changes
 
@@ -10,7 +10,7 @@ This file describes prepared changes, not a record of completed npm publication.
 - **@frankfmy/elysia-kit 2.0.0:** require consumer-provided `elysia >=1.4.29 <2` instead of the former `^1` peer range. Keep framework and runtime dependencies, including `jose`, external to the bundle.
 - **Rate-limit identity:** `trustProxy` defaults to false. Requests share one global anonymous bucket by default because a Web Request does not expose an authoritative peer IP. Deployments needing per-client limits must explicitly configure a trustworthy `keyGenerator` or enable proxy trust only behind a controlled proxy that overwrites forwarded headers and cannot be bypassed.
 
-These peer-range and identity-policy changes are major-version candidates, not patch-compatible updates to db-utils or elysia-kit.
+These peer-range and identity-policy changes are major-version changes, not patch-compatible updates to db-utils or elysia-kit.
 
 ### Security and correctness
 
@@ -29,7 +29,7 @@ These peer-range and identity-policy changes are major-version candidates, not p
 
 ### Packaging and documentation
 
-- Prepare **1.1.2** for core, validation, and UI, and **2.0.0** for db-utils and elysia-kit; publication is pending.
+- Package versions are **1.1.2** for core, validation, and UI, and **2.0.0** for db-utils and elysia-kit.
 - Include LICENSE and NOTICE in package artifacts, avoid workspace protocols in consumer dependencies, keep framework peers external, and exclude test files from declaration/package output.
 - Provide `@frankfmy/ui/styles.css` as a Tailwind v4 **source-registration** export. It is not precompiled CSS; applications must process Tailwind and compile the root `.svelte` modules for client and SSR use. Native Node root imports are not supported.
 - Qualify package tarballs with isolated consumer installation/export checks, dependency-tree checks, and production audits. Contributors run `bun run verify`; successful local gates alone do not authorize publication.
